@@ -9,5 +9,10 @@ namespace Microsoft.Xna.Framework.Input.Touch
     public class TouchPanel
     {
         public static GestureType EnabledGestures { get; set; }
+
+        public static TouchCollection GetState()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

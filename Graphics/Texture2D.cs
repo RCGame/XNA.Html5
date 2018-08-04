@@ -10,7 +10,16 @@ namespace Microsoft.Xna.Framework.Graphics
     {
         public int Width { get; }
         public int Height { get; }
+        public Texture2D(GraphicsDevice graphicsDevice, int width, int height)
+        {
+
+        }
+
         public void GetData<T>(T[] data)
+        {
+
+        }
+        public void SetData(Color[] color)
         {
 
         }
