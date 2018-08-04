@@ -1,28 +1,86 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿// MonoGame - Copyright (C) The MonoGame Team
+// This file is subject to the terms and conditions defined in
+// file 'LICENSE.txt', which is part of this source code package.
+
+using System;
 
 namespace Microsoft.Xna.Framework
 {
-    public class GameComponent
+    public class GameComponent : IGameComponent, IComparable<GameComponent>, IDisposable
     {
-        protected Game Game { get; set; }
+        bool _enabled = true;
+        int _updateOrder;
+
+        public Game Game { get; private set; }
+
+        public bool Enabled
+        {
+            get { return _enabled; }
+            set
+            {
+                if (_enabled != value)
+                {
+                    _enabled = value;
+                    OnEnabledChanged(this, EventArgs.Empty);
+                }
+            }
+        }
+
+        public int UpdateOrder
+        {
+            get { return _updateOrder; }
+            set
+            {
+                if (_updateOrder != value)
+                {
+                    _updateOrder = value;
+                    OnUpdateOrderChanged(this, EventArgs.Empty);
+                }
+            }
+        }
+
+        public event EventHandler<EventArgs> EnabledChanged;
+        public event EventHandler<EventArgs> UpdateOrderChanged;
 
         public GameComponent(Game game)
         {
-
+            this.Game = game;
         }
 
-        public virtual void Initialize()
+        public virtual void Initialize() { }
+
+        public virtual void Update(GameTime gameTime) { }
+
+        protected virtual void OnUpdateOrderChanged(object sender, EventArgs args)
         {
-
+            EventHelpers.Raise(this, UpdateOrderChanged, args);
         }
 
-        public virtual void Update(GameTime gameTime)
+        protected virtual void OnEnabledChanged(object sender, EventArgs args)
         {
-
+            EventHelpers.Raise(this, EnabledChanged, args);
         }
+
+        /// <summary>
+        /// Shuts down the component.
+        /// </summary>
+        protected virtual void Dispose(bool disposing) { }
+
+        /// <summary>
+        /// Shuts down the component.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+
+        #region IComparable<GameComponent> Members
+        // TODO: Should be removed, as it is not part of XNA 4.0
+        public int CompareTo(GameComponent other)
+        {
+            return other.UpdateOrder - this.UpdateOrder;
+        }
+
+        #endregion
     }
 }

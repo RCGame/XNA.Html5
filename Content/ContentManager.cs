@@ -9,5 +9,9 @@ namespace Microsoft.Xna.Framework.Content
     public class ContentManager
     {
         public string RootDirectory { get; set; }
+        public T Load<T>(string name)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
