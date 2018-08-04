@@ -56,6 +56,13 @@ namespace Microsoft.Xna.Framework.Graphics
 
         }
 
+        public void DrawString(
+            SpriteFont spriteFont, string text, Vector2 position, Color color,
+            float rotation, Vector2 origin, float scale, SpriteEffects effects, float layerDepth)
+        {
+
+        }
+
         public void End()
         {
 
