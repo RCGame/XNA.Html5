@@ -13,7 +13,7 @@
     <ProjectGuid>{CECD56D2-EE56-4784-9056-9E2405BCC2C0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>XNA.Html5</RootNamespace>
+    <RootNamespace>Microsoft.Xna.Framework</RootNamespace>
     <AssemblyName>XNA.Html5</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -41,12 +41,26 @@
     <Compile Include="BoundingSphere.cs" />
     <Compile Include="Color.cs" />
     <Compile Include="ContainmentType.cs" />
+    <Compile Include="Content\ContentManager.cs" />
     <Compile Include="Curve.cs" />
     <Compile Include="CurveContinuity.cs" />
     <Compile Include="CurveKey.cs" />
     <Compile Include="CurveKeyCollection.cs" />
     <Compile Include="CurveLoopType.cs" />
     <Compile Include="CurveTangent.cs" />
+    <Compile Include="DrawableGameComponent.cs" />
+    <Compile Include="EventHelpers.cs" />
+    <Compile Include="Game.cs" />
+    <Compile Include="GameComponent.cs" />
+    <Compile Include="GameTime.cs" />
+    <Compile Include="Graphics\GraphicsDevice.cs" />
+    <Compile Include="Graphics\RenderTarget2D.cs" />
+    <Compile Include="Graphics\SpriteBatch.cs" />
+    <Compile Include="Graphics\Texture2D.cs" />
+    <Compile Include="Graphics\Viewport.cs" />
+    <Compile Include="IDrawable.cs" />
+    <Compile Include="Input\Touch\GestureType.cs" />
+    <Compile Include="Input\Touch\TouchPanel.cs" />
     <Compile Include="MathHelper.cs" />
     <Compile Include="Matrix.cs" />
     <Compile Include="Plane.cs" />
@@ -75,6 +89,7 @@
       <HintPath>packages\Bridge.Newtonsoft.Json.1.9.0\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="packages\Bridge.Min.17.2.0\build\Bridge.Min.targets" Condition="Exists('packages\Bridge.Min.17.2.0\build\Bridge.Min.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
