@@ -36,5 +36,29 @@ namespace Microsoft.Xna.Framework.Graphics
                 float layerDepth)
         {
         }
+
+        public void Begin()
+        {
+
+        }
+
+        public void Begin
+        (
+             int sortMode = 0,
+             object blendState = null,
+             object samplerState = null,
+             object depthStencilState = null,
+             object rasterizerState = null,
+             object effect = null,
+             Matrix? transformMatrix = null
+            )
+        {
+
+        }
+
+        public void End()
+        {
+
+        }
     }
 }
