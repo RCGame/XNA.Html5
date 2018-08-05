@@ -1,8 +1,9 @@
 using System;
+using FarseerPhysics.Samples.Demos;
+using FarseerPhysics.Samples.ScreenSystem;
 using Microsoft.Xna.Framework;
-using FarseerPhysics.Utility;
 
-namespace FarseerPhysics.SamplesFramework
+namespace FarseerPhysics.Samples
 {
     /// <summary>
     /// This is the main type for your game
@@ -13,36 +14,35 @@ namespace FarseerPhysics.SamplesFramework
 
         public FarseerPhysicsGame()
         {
-            //Window.Title = "Farseer Samples Framework";
+            Window.Title = "Farseer Samples Framework";
             _graphics = new GraphicsDeviceManager(this);
             _graphics.PreferMultiSampling = true;
-            //TargetElapsedTime = TimeSpan.FromTicks(333333);
 #if WINDOWS || XBOX
             _graphics.PreferredBackBufferWidth = 1280;
             _graphics.PreferredBackBufferHeight = 720;
             ConvertUnits.SetDisplayUnitToSimUnitRatio(24f);
             IsFixedTimeStep = true;
-#elif WINDOWS_PHONE || ANDROID
+#elif WINDOWS_PHONE
             _graphics.PreferredBackBufferWidth = 800;
             _graphics.PreferredBackBufferHeight = 480;
-            _graphics.SupportedOrientations = DisplayOrientation.LandscapeLeft;
             ConvertUnits.SetDisplayUnitToSimUnitRatio(16f);
             IsFixedTimeStep = false;
 #endif
 #if WINDOWS
             _graphics.IsFullScreen = false;
-#elif XBOX || WINDOWS_PHONE || ANDROID
+#elif XBOX || WINDOWS_PHONE
             _graphics.IsFullScreen = true;
 #endif
+
             Content.RootDirectory = "Content";
 
             //new-up components and add to Game.Components
             ScreenManager = new ScreenManager(this);
             Components.Add(ScreenManager);
 
-            //FrameRateCounter frameRateCounter = new FrameRateCounter(ScreenManager);
-            //frameRateCounter.DrawOrder = 101;
-            //Components.Add(frameRateCounter);
+            FrameRateCounter frameRateCounter = new FrameRateCounter(ScreenManager);
+            frameRateCounter.DrawOrder = 101;
+            Components.Add(frameRateCounter);
         }
 
         public ScreenManager ScreenManager { get; set; }
@@ -56,6 +56,7 @@ namespace FarseerPhysics.SamplesFramework
         protected override void Initialize()
         {
             base.Initialize();
+
             SimpleDemo1 simple1 = new SimpleDemo1();
             SimpleDemo2 simple2 = new SimpleDemo2();
             SimpleDemo3 simple3 = new SimpleDemo3();
@@ -68,13 +69,14 @@ namespace FarseerPhysics.SamplesFramework
 
             AdvancedDemo1 advanced1 = new AdvancedDemo1();
             AdvancedDemo2 advanced2 = new AdvancedDemo2();
-            //AdvancedDemo3 advanced3 = new AdvancedDemo3();
+            AdvancedDemo3 advanced3 = new AdvancedDemo3();
             AdvancedDemo4 advanced4 = new AdvancedDemo4();
-            //AdvancedDemo5 advanced5 = new AdvancedDemo5();
+            AdvancedDemo5 advanced5 = new AdvancedDemo5();
 
-            //GameDemo1 game1 = new GameDemo1();
-            //MenuScreen menuScreen = new MenuScreen("Farseer Samples");
-            /**
+            GameDemo1 game1 = new GameDemo1();
+
+            MenuScreen menuScreen = new MenuScreen("Farseer Samples");
+
             menuScreen.AddMenuItem("Simple Samples", EntryType.Separator, null);
             menuScreen.AddMenuItem(simple1.GetTitle(), EntryType.Screen, simple1);
             menuScreen.AddMenuItem(simple2.GetTitle(), EntryType.Screen, simple2);
@@ -98,12 +100,10 @@ namespace FarseerPhysics.SamplesFramework
 
             menuScreen.AddMenuItem("", EntryType.Separator, null);
             menuScreen.AddMenuItem("Exit", EntryType.ExitItem, null);
-            
+
             ScreenManager.AddScreen(new BackgroundScreen());
             ScreenManager.AddScreen(menuScreen);
             ScreenManager.AddScreen(new LogoScreen(TimeSpan.FromSeconds(3.0)));
-            **/
-            ScreenManager.AddScreen(simple2);
         }
     }
 }

@@ -69,6 +69,7 @@
     <Compile Include="Graphics\Viewport.cs" />
     <Compile Include="IDrawable.cs" />
     <Compile Include="IGameComponent.cs" />
+    <Compile Include="Input\Touch\GestureSample.cs" />
     <Compile Include="Input\Touch\GestureType.cs" />
     <Compile Include="Input\Touch\TouchCollection.cs" />
     <Compile Include="Input\Touch\TouchLocation.cs" />

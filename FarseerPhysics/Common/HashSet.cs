@@ -1,37 +1,31 @@
+#if WINDOWS_PHONE || XBOX
 
-#if WINDOWS_PHONE_7 || XBOX
-
-//TODO: FIX
-
-using System;
 using System.Collections;
 using System.Collections.Generic;
 
 namespace FarseerPhysics.Common
 {
-    
     public class HashSet<T> : ICollection<T>
     {
-        private Dictionary<T, short> _dict;
+        private Dictionary<T, byte> _dict;
 
         public HashSet(int capacity)
         {
-            _dict = new Dictionary<T, short>(capacity);
+            _dict = new Dictionary<T, byte>(capacity);
         }
 
         public HashSet()
         {
-            _dict = new Dictionary<T, short>();
+            _dict = new Dictionary<T, byte>();
         }
 
-        // Methods
-
-#region ICollection<T> Members
+        #region ICollection<T> Members
 
         public void Add(T item)
         {
-            // We don't care for the value in dictionary, Keys matter.
-            _dict.Add(item, 0);
+            // We don't care for the value in dictionary, only keys matter.
+            if (!_dict.ContainsKey(item))
+                _dict.Add(item, 0);
         }
 
         public void Clear()
@@ -46,7 +40,10 @@ namespace FarseerPhysics.Common
 
         public void CopyTo(T[] array, int arrayIndex)
         {
-            throw new NotImplementedException();
+            foreach (var item in _dict.Keys)
+            {
+                array[arrayIndex++] = item;
+            }
         }
 
         public bool Remove(T item)

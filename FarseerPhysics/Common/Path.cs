@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Xna.Framework;
@@ -239,7 +239,7 @@ namespace FarseerPhysics.Common
 
             Vector2.Subtract(ref a, ref b, out temp);
 
-#if (XBOX360 || WINDOWS_PHONE_7 || ANDROID)
+#if (XBOX360 || WINDOWS_PHONE)
 output = new Vector2();
 #endif
             output.X = -temp.Y;

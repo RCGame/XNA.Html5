@@ -1,10 +1,11 @@
 using System.Collections.Generic;
+using FarseerPhysics.Samples.DrawingSystem;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input.Touch;
 
-namespace FarseerPhysics.Utility
+namespace FarseerPhysics.Samples.ScreenSystem
 {
     /// <summary>
     /// The screen manager is a component which manages one or more GameScreen
@@ -14,15 +15,11 @@ namespace FarseerPhysics.Utility
     /// </summary>
     public class ScreenManager : DrawableGameComponent
     {
-        private ContentManager _contentManager;
-
+        private InputHelper _input;
         private bool _isInitialized;
 
         private List<GameScreen> _screens;
         private List<GameScreen> _screensToUpdate;
-
-        private SpriteBatch _spriteBatch;
-
 
         private List<RenderTarget2D> _transitions;
 
@@ -35,8 +32,9 @@ namespace FarseerPhysics.Utility
             // we must set EnabledGestures before we can query for them, but
             // we don't assume the game wants to read them.
             TouchPanel.EnabledGestures = GestureType.None;
-            _contentManager = game.Content;
-            _contentManager.RootDirectory = "Content";
+            Content = game.Content;
+            Content.RootDirectory = "Content";
+            _input = new InputHelper(this);
 
             _screens = new List<GameScreen>();
             _screensToUpdate = new List<GameScreen>();
@@ -47,24 +45,22 @@ namespace FarseerPhysics.Utility
         /// A default SpriteBatch shared by all the screens. This saves
         /// each screen having to bother creating their own local instance.
         /// </summary>
-        public SpriteBatch SpriteBatch
-        {
-            get { return _spriteBatch; }
-        }
+        public SpriteBatch SpriteBatch { get; private set; }
 
+        public LineBatch LineBatch { get; private set; }
 
-        public ContentManager Content
-        {
-            get { return _contentManager; }
-        }
+        public ContentManager Content { get; private set; }
 
+        public SpriteFonts Fonts { get; private set; }
+
+        public AssetCreator Assets { get; private set; }
 
         /// <summary>
         /// Initializes the screen manager component.
         /// </summary>
         public override void Initialize()
         {
-            //_spriteFonts = new SpriteFonts(_contentManager);
+            Fonts = new SpriteFonts(Content);
             base.Initialize();
 
             _isInitialized = true;
@@ -75,7 +71,11 @@ namespace FarseerPhysics.Utility
         /// </summary>
         protected override void LoadContent()
         {
-            _spriteBatch = new SpriteBatch(GraphicsDevice);
+            SpriteBatch = new SpriteBatch(GraphicsDevice);
+            LineBatch = new LineBatch(GraphicsDevice);
+            Assets = new AssetCreator(GraphicsDevice);
+            Assets.LoadContent(Content);
+            _input.LoadContent();
 
             // Tell each of the screens to load their content.
             foreach (GameScreen screen in _screens)
@@ -101,6 +101,8 @@ namespace FarseerPhysics.Utility
         /// </summary>
         public override void Update(GameTime gameTime)
         {
+            // Read the keyboard and gamepad.
+            _input.Update(gameTime);
 
             // Make a copy of the master screen list, to avoid confusion if
             // the process of updating one screen adds or removes others.
@@ -125,22 +127,22 @@ namespace FarseerPhysics.Utility
                 // Update the screen.
                 screen.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
 
-                if (screen.ScreenState == ScreenState.TransitionOn ||
-                    screen.ScreenState == ScreenState.Active)
+                if (screen.ScreenState == ScreenState.TransitionOn || screen.ScreenState == ScreenState.Active)
                 {
                     // If this is the first active screen we came across,
                     // give it a chance to handle input.
                     if (!otherScreenHasFocus)
                     {
+                        _input.ShowCursor = screen.HasCursor;
+                        _input.EnableVirtualStick = screen.HasVirtualStick;
+                        screen.HandleInput(_input, gameTime);
                         otherScreenHasFocus = true;
                     }
 
                     // If this is an active non-popup, inform any subsequent
                     // screens that they are covered by it.
                     if (!screen.IsPopup)
-                    {
                         coveredByOtherScreen = true;
-                    }
                 }
             }
         }
@@ -150,12 +152,6 @@ namespace FarseerPhysics.Utility
         /// </summary>
         public override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.Black);
-            foreach (GameScreen screen in _screens)
-            {
-                screen.Draw(gameTime);
-            }
-            /**
             int transitionCount = 0;
             foreach (GameScreen screen in _screens)
             {
@@ -166,11 +162,7 @@ namespace FarseerPhysics.Utility
                     if (_transitions.Count < transitionCount)
                     {
                         PresentationParameters _pp = GraphicsDevice.PresentationParameters;
-                        _transitions.Add(new RenderTarget2D(GraphicsDevice, _pp.BackBufferWidth, _pp.BackBufferHeight,
-                                                            false,
-                                                            SurfaceFormat.Color, _pp.DepthStencilFormat,
-                                                            _pp.MultiSampleCount,
-                                                            RenderTargetUsage.DiscardContents));
+                        _transitions.Add(new RenderTarget2D(GraphicsDevice, _pp.BackBufferWidth, _pp.BackBufferHeight, false, SurfaceFormat.Color, _pp.DepthStencilFormat, _pp.MultiSampleCount, RenderTargetUsage.DiscardContents));
                     }
                     GraphicsDevice.SetRenderTarget(_transitions[transitionCount - 1]);
                     GraphicsDevice.Clear(Color.Transparent);
@@ -185,25 +177,20 @@ namespace FarseerPhysics.Utility
             foreach (GameScreen screen in _screens)
             {
                 if (screen.ScreenState == ScreenState.Hidden)
-                {
                     continue;
-                }
 
-                if (screen.ScreenState == ScreenState.TransitionOn ||
-                    screen.ScreenState == ScreenState.TransitionOff)
+                if (screen.ScreenState == ScreenState.TransitionOn || screen.ScreenState == ScreenState.TransitionOff)
                 {
-                    _spriteBatch.Begin(0, BlendState.AlphaBlend);
-                    _spriteBatch.Draw(_transitions[transitionCount], Vector2.Zero, Color.White * screen.TransitionAlpha);
-                    _spriteBatch.End();
+                    SpriteBatch.Begin(0, BlendState.AlphaBlend);
+                    SpriteBatch.Draw(_transitions[transitionCount], Vector2.Zero, Color.White * screen.TransitionAlpha);
+                    SpriteBatch.End();
 
                     ++transitionCount;
                 }
                 else
-                {
                     screen.Draw(gameTime);
-                }
             }
-            **/
+            _input.Draw();
         }
 
         /// <summary>
@@ -216,9 +203,7 @@ namespace FarseerPhysics.Utility
 
             // If we have a graphics device, tell the screen to load content.
             if (_isInitialized)
-            {
                 screen.LoadContent();
-            }
 
             _screens.Add(screen);
 
@@ -236,9 +221,7 @@ namespace FarseerPhysics.Utility
         {
             // If we have a graphics device, tell the screen to unload content.
             if (_isInitialized)
-            {
                 screen.UnloadContent();
-            }
 
             _screens.Remove(screen);
             _screensToUpdate.Remove(screen);
@@ -246,19 +229,7 @@ namespace FarseerPhysics.Utility
             // if there is a screen still in the manager, update TouchPanel
             // to respond to gestures that screen is interested in.
             if (_screens.Count > 0)
-            {
                 TouchPanel.EnabledGestures = _screens[_screens.Count - 1].EnabledGestures;
-            }
-        }
-
-        /// <summary>
-        /// Expose an array holding all the screens. We return a copy rather
-        /// than the real master list, because screens should only ever be added
-        /// or removed using the AddScreen and RemoveScreen methods.
-        /// </summary>
-        public GameScreen[] GetScreens()
-        {
-            return _screens.ToArray();
         }
     }
 }

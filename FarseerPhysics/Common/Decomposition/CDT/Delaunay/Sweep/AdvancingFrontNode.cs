@@ -1,4 +1,4 @@
-/* Poly2Tri
+﻿/* Poly2Tri
  * Copyright (c) 2009-2010, Poly2Tri Contributors
  * http://code.google.com/p/poly2tri/
  *
@@ -35,9 +35,9 @@
 // Future possibilities
 //   Comments!
 
-namespace Poly2Tri.Triangulation.Delaunay.Sweep
+namespace FarseerPhysics.Common.Decomposition.CDT.Delaunay.Sweep
 {
-    public class AdvancingFrontNode
+    internal class AdvancingFrontNode
     {
         public AdvancingFrontNode Next;
         public TriangulationPoint Point;

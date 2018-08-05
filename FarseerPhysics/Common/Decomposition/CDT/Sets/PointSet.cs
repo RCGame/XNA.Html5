@@ -1,4 +1,4 @@
-/* Poly2Tri
+﻿/* Poly2Tri
  * Copyright (c) 2009-2010, Poly2Tri Contributors
  * http://code.google.com/p/poly2tri/
  *
@@ -30,11 +30,11 @@
  */
 
 using System.Collections.Generic;
-using Poly2Tri.Triangulation.Delaunay;
+using FarseerPhysics.Common.Decomposition.CDT.Delaunay;
 
-namespace Poly2Tri.Triangulation.Sets
+namespace FarseerPhysics.Common.Decomposition.CDT.Sets
 {
-    public class PointSet : Triangulatable
+    internal class PointSet : Triangulatable
     {
         public PointSet(List<TriangulationPoint> points)
         {

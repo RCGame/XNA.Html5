@@ -13,5 +13,14 @@ namespace Microsoft.Xna.Framework.Content
         {
             throw new NotImplementedException();
         }
+
+        public ContentManager(IServiceProvider serviceProvider, string rootDirectory)
+        {
+        }
+
+        public void Unload()
+        {
+
+        }
     }
 }

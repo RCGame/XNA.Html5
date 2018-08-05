@@ -52,5 +52,10 @@ namespace Microsoft.Xna.Framework
             var ctx = canvas.GetContext("2d").As<CanvasRenderingContext2D>();
             ctx.FillRect(20, 20, 150, 100);
         }
+
+        public void Exit()
+        {
+
+        }
     }
 }

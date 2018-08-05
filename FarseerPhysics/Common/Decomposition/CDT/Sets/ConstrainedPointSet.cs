@@ -1,4 +1,4 @@
-/* Poly2Tri
+﻿/* Poly2Tri
  * Copyright (c) 2009-2010, Poly2Tri Contributors
  * http://code.google.com/p/poly2tri/
  *
@@ -31,7 +31,7 @@
 
 using System.Collections.Generic;
 
-namespace Poly2Tri.Triangulation.Sets
+namespace FarseerPhysics.Common.Decomposition.CDT.Sets
 {
     /*
      * Extends the PointSet by adding some Constraints on how it will be triangulated<br>
@@ -43,9 +43,9 @@ namespace Poly2Tri.Triangulation.Sets
      * @author Thomas Åhlén, thahlen@gmail.com
      */
 
-    public class ConstrainedPointSet : PointSet
+    internal class ConstrainedPointSet : PointSet
     {
-        private List<TriangulationPoint> _constrainedPointList = null;
+        private List<TriangulationPoint> _constrainedPointList;
 
         public ConstrainedPointSet(List<TriangulationPoint> points, int[] index)
             : base(points)

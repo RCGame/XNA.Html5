@@ -1,12 +1,9 @@
-/*
-* Farseer Physics Engine based on Box2D.XNA port:
-* Copyright (c) 2010 Ian Qvist
+﻿/*
+* Farseer Physics Engine:
+* Copyright (c) 2012 Ian Qvist
 * 
-* Box2D.XNA port of Box2D:
-* Copyright (c) 2009 Brandon Furtwangler, Nathan Furtwangler
-*
 * Original source Box2D:
-* Copyright (c) 2006-2009 Erin Catto http://www.gphysics.com 
+* Copyright (c) 2006-2011 Erin Catto http://www.box2d.org 
 * 
 * This software is provided 'as-is', without any express or implied 
 * warranty.  In no event will the authors be held liable for any damages 
@@ -37,29 +34,33 @@ namespace FarseerPhysics.Dynamics
     /// </summary>
     public class Island
     {
+        private ContactManager _contactManager;
+        private ContactSolver _contactSolver = new ContactSolver();
+        private Contact[] _contacts;
+        private Joint[] _joints;
+
+        private const float LinTolSqr = Settings.LinearSleepTolerance * Settings.LinearSleepTolerance;
+        private const float AngTolSqr = Settings.AngularSleepTolerance * Settings.AngularSleepTolerance;
+        private Stopwatch _watch = new Stopwatch();
+
         public Body[] Bodies;
         public int BodyCount;
         public int ContactCount;
         public int JointCount;
-        private int _bodyCapacity;
-        private int _contactCapacity;
-        private ContactManager _contactManager;
-        private ContactSolver _contactSolver = new ContactSolver();
-        private Contact[] _contacts;
-        private int _jointCapacity;
-        private Joint[] _joints;
+
+        public Velocity[] _velocities;
+        public Position[] _positions;
+
+        public int BodyCapacity;
+        public int ContactCapacity;
+        public int JointCapacity;
         public float JointUpdateTime;
-
-        private const float LinTolSqr = Settings.LinearSleepTolerance * Settings.LinearSleepTolerance;
-        private const float AngTolSqr = Settings.AngularSleepTolerance * Settings.AngularSleepTolerance;
-
 
         public void Reset(int bodyCapacity, int contactCapacity, int jointCapacity, ContactManager contactManager)
         {
-            _bodyCapacity = bodyCapacity;
-            _contactCapacity = contactCapacity;
-            _jointCapacity = jointCapacity;
-
+            BodyCapacity = bodyCapacity;
+            ContactCapacity = contactCapacity;
+            JointCapacity = jointCapacity;
             BodyCount = 0;
             ContactCount = 0;
             JointCount = 0;
@@ -69,6 +70,8 @@ namespace FarseerPhysics.Dynamics
             if (Bodies == null || Bodies.Length < bodyCapacity)
             {
                 Bodies = new Body[bodyCapacity];
+                _velocities = new Velocity[bodyCapacity];
+                _positions = new Position[bodyCapacity];
             }
 
             if (_contacts == null || _contacts.Length < contactCapacity)
@@ -89,68 +92,60 @@ namespace FarseerPhysics.Dynamics
             JointCount = 0;
         }
 
-        private float _tmpTime;
-
         public void Solve(ref TimeStep step, ref Vector2 gravity)
         {
-            // Integrate velocities and apply damping.
+            float h = step.dt;
+
+            // Integrate velocities and apply damping. Initialize the body state.
             for (int i = 0; i < BodyCount; ++i)
             {
                 Body b = Bodies[i];
 
-                if (b.BodyType != BodyType.Dynamic)
+                Vector2 c = b._sweep.C;
+                float a = b._sweep.A;
+                Vector2 v = b._linearVelocity;
+                float w = b._angularVelocity;
+
+                // Store positions for continuous collision.
+                b._sweep.C0 = b._sweep.C;
+                b._sweep.A0 = b._sweep.A;
+
+                if (b.BodyType == BodyType.Dynamic)
                 {
-                    continue;
+                    // Integrate velocities.
+
+                    // FPE: Only apply gravity if the body wants it.
+                    if (b.IgnoreGravity)
+                        v += h * (b._invMass * b._force);
+                    else
+                        v += h * (b.GravityScale * gravity + b._invMass * b._force);
+
+                    w += h * b._invI * b._torque;
+
+                    // Apply damping.
+                    // ODE: dv/dt + c * v = 0
+                    // Solution: v(t) = v0 * exp(-c * t)
+                    // Time step: v(t + dt) = v0 * exp(-c * (t + dt)) = v0 * exp(-c * t) * exp(-c * dt) = v * exp(-c * dt)
+                    // v2 = exp(-c * dt) * v1
+                    // Taylor expansion:
+                    // v2 = (1.0f - c * dt) * v1
+                    v *= MathUtils.Clamp(1.0f - h * b.LinearDamping, 0.0f, 1.0f);
+                    w *= MathUtils.Clamp(1.0f - h * b.AngularDamping, 0.0f, 1.0f);
                 }
 
-                // Integrate velocities.
-                // FPE 3 only - Only apply gravity if the body wants it.
-                if (b.IgnoreGravity)
-                {
-                    b.LinearVelocityInternal.X += step.dt * (b.InvMass * b.Force.X);
-                    b.LinearVelocityInternal.Y += step.dt * (b.InvMass * b.Force.Y);
-                    b.AngularVelocityInternal += step.dt * b.InvI * b.Torque;
-                }
-                else
-                {
-                    b.LinearVelocityInternal.X += step.dt * (gravity.X + b.InvMass * b.Force.X);
-                    b.LinearVelocityInternal.Y += step.dt * (gravity.Y + b.InvMass * b.Force.Y);
-                    b.AngularVelocityInternal += step.dt * b.InvI * b.Torque;
-                }
-
-                // Apply damping.
-                // ODE: dv/dt + c * v = 0
-                // Solution: v(t) = v0 * exp(-c * t)
-                // Time step: v(t + dt) = v0 * exp(-c * (t + dt)) = v0 * exp(-c * t) * exp(-c * dt) = v * exp(-c * dt)
-                // v2 = exp(-c * dt) * v1
-                // Taylor expansion:
-                // v2 = (1.0f - c * dt) * v1
-                b.LinearVelocityInternal *= MathUtils.Clamp(1.0f - step.dt * b.LinearDamping, 0.0f, 1.0f);
-                b.AngularVelocityInternal *= MathUtils.Clamp(1.0f - step.dt * b.AngularDamping, 0.0f, 1.0f);
+                _positions[i].c = c;
+                _positions[i].a = a;
+                _velocities[i].v = v;
+                _velocities[i].w = w;
             }
 
-            // Partition contacts so that contacts with static bodies are solved last.
-            int i1 = -1;
-            for (int i2 = 0; i2 < ContactCount; ++i2)
-            {
-                Fixture fixtureA = _contacts[i2].FixtureA;
-                Fixture fixtureB = _contacts[i2].FixtureB;
-                Body bodyA = fixtureA.Body;
-                Body bodyB = fixtureB.Body;
-                bool nonStatic = bodyA.BodyType != BodyType.Static && bodyB.BodyType != BodyType.Static;
-                if (nonStatic)
-                {
-                    ++i1;
+            // Solver data
+            SolverData solverData = new SolverData();
+            solverData.step = step;
+            solverData.positions = _positions;
+            solverData.velocities = _velocities;
 
-                    //TODO: Only swap if they are not the same? see http://code.google.com/p/box2d/issues/detail?id=162
-                    Contact tmp = _contacts[i1];
-                    _contacts[i1] = _contacts[i2];
-                    _contacts[i2] = tmp;
-                }
-            }
-
-            // Initialize velocity constraints.
-            _contactSolver.Reset(_contacts, ContactCount, step.dtRatio, Settings.EnableWarmstarting);
+            _contactSolver.Reset(step, ContactCount, _contacts, _positions, _velocities);
             _contactSolver.InitializeVelocityConstraints();
 
             if (Settings.EnableWarmstarting)
@@ -158,13 +153,17 @@ namespace FarseerPhysics.Dynamics
                 _contactSolver.WarmStart();
             }
 
+            if (Settings.EnableDiagnostics)
+                _watch.Start();
 
             for (int i = 0; i < JointCount; ++i)
             {
                 if (_joints[i].Enabled)
-                    _joints[i].InitVelocityConstraints(ref step);
+                    _joints[i].InitVelocityConstraints(ref solverData);
             }
 
+            if (Settings.EnableDiagnostics)
+                _watch.Stop();
 
             // Solve velocity constraints.
             for (int i = 0; i < Settings.VelocityIterations; ++i)
@@ -176,89 +175,107 @@ namespace FarseerPhysics.Dynamics
                     if (!joint.Enabled)
                         continue;
 
-                    joint.SolveVelocityConstraints(ref step);
-                    joint.Validate(step.inv_dt);
-                }
+                    if (Settings.EnableDiagnostics)
+                        _watch.Start();
 
+                    joint.SolveVelocityConstraints(ref solverData);
+                    joint.Validate(step.inv_dt);
+
+                    if (Settings.EnableDiagnostics)
+                        _watch.Stop();
+                }
 
                 _contactSolver.SolveVelocityConstraints();
             }
 
-            // Post-solve (store impulses for warm starting).
+            // Store impulses for warm starting.
             _contactSolver.StoreImpulses();
 
-            // Integrate positions.
+            // Integrate positions
             for (int i = 0; i < BodyCount; ++i)
             {
-                Body b = Bodies[i];
+                Vector2 c = _positions[i].c;
+                float a = _positions[i].a;
+                Vector2 v = _velocities[i].v;
+                float w = _velocities[i].w;
 
-                if (b.BodyType == BodyType.Static)
+                // Check for large velocities
+                Vector2 translation = h * v;
+                if (Vector2.Dot(translation, translation) > Settings.MaxTranslationSquared)
                 {
-                    continue;
+                    float ratio = Settings.MaxTranslation / translation.Length();
+                    v *= ratio;
                 }
 
-                // Check for large velocities.
-                float translationX = step.dt * b.LinearVelocityInternal.X;
-                float translationY = step.dt * b.LinearVelocityInternal.Y;
-                float result = translationX * translationX + translationY * translationY;
-
-                if (result > Settings.MaxTranslationSquared)
-                {
-                    float sq = (float)Math.Sqrt(result);
-
-                    float ratio = Settings.MaxTranslation / sq;
-                    b.LinearVelocityInternal.X *= ratio;
-                    b.LinearVelocityInternal.Y *= ratio;
-                }
-
-                float rotation = step.dt * b.AngularVelocityInternal;
+                float rotation = h * w;
                 if (rotation * rotation > Settings.MaxRotationSquared)
                 {
                     float ratio = Settings.MaxRotation / (float)Math.Abs(rotation);
-                    b.AngularVelocityInternal *= ratio;
+                    w *= ratio;
                 }
 
-                // Store positions for continuous collision.
-                b.Sweep.C0.X = b.Sweep.C.X;
-                b.Sweep.C0.Y = b.Sweep.C.Y;
-                b.Sweep.A0 = b.Sweep.A;
-
                 // Integrate
-                b.Sweep.C.X += step.dt * b.LinearVelocityInternal.X;
-                b.Sweep.C.Y += step.dt * b.LinearVelocityInternal.Y;
-                b.Sweep.A += step.dt * b.AngularVelocityInternal;
+                c += h * v;
+                a += h * w;
 
-                // Compute new transform
-                b.SynchronizeTransform();
-
-                // Note: shapes are synchronized later.
+                _positions[i].c = c;
+                _positions[i].a = a;
+                _velocities[i].v = v;
+                _velocities[i].w = w;
             }
 
-            // Iterate over constraints.
+
+            // Solve position constraints
+            bool positionSolved = false;
             for (int i = 0; i < Settings.PositionIterations; ++i)
             {
-                bool contactsOkay = _contactSolver.SolvePositionConstraints(Settings.ContactBaumgarte);
-                bool jointsOkay = true;
+                bool contactsOkay = _contactSolver.SolvePositionConstraints();
 
+                bool jointsOkay = true;
                 for (int j = 0; j < JointCount; ++j)
                 {
                     Joint joint = _joints[j];
+
                     if (!joint.Enabled)
                         continue;
 
-                    bool jointOkay = joint.SolvePositionConstraints();
+                    if (Settings.EnableDiagnostics)
+                        _watch.Start();
+
+                    bool jointOkay = joint.SolvePositionConstraints(ref solverData);
+
+                    if (Settings.EnableDiagnostics)
+                        _watch.Stop();
+
                     jointsOkay = jointsOkay && jointOkay;
                 }
 
                 if (contactsOkay && jointsOkay)
                 {
                     // Exit early if the position errors are small.
+                    positionSolved = true;
                     break;
                 }
             }
 
+            if (Settings.EnableDiagnostics)
+            {
+                JointUpdateTime = _watch.ElapsedTicks;
+                _watch.Reset();
+            }
 
-            Report(_contactSolver.Constraints);
+            // Copy state buffers back to the bodies
+            for (int i = 0; i < BodyCount; ++i)
+            {
+                Body body = Bodies[i];
+                body._sweep.C = _positions[i].c;
+                body._sweep.A = _positions[i].a;
+                body._linearVelocity = _velocities[i].v;
+                body._angularVelocity = _velocities[i].w;
+                body.SynchronizeTransform();
+            }
+
+            Report(_contactSolver._velocityConstraints);
 
             if (Settings.AllowSleep)
             {
@@ -267,32 +284,23 @@ namespace FarseerPhysics.Dynamics
                 for (int i = 0; i < BodyCount; ++i)
                 {
                     Body b = Bodies[i];
+
                     if (b.BodyType == BodyType.Static)
-                    {
                         continue;
-                    }
 
-                    if ((b.Flags & BodyFlags.AutoSleep) == 0)
+                    if (!b.SleepingAllowed || b._angularVelocity * b._angularVelocity > AngTolSqr || Vector2.Dot(b._linearVelocity, b._linearVelocity) > LinTolSqr)
                     {
-                        b.SleepTime = 0.0f;
-                        minSleepTime = 0.0f;
-                    }
-
-                    if ((b.Flags & BodyFlags.AutoSleep) == 0 ||
-                        b.AngularVelocityInternal * b.AngularVelocityInternal > AngTolSqr ||
-                        Vector2.Dot(b.LinearVelocityInternal, b.LinearVelocityInternal) > LinTolSqr)
-                    {
-                        b.SleepTime = 0.0f;
+                        b._sleepTime = 0.0f;
                         minSleepTime = 0.0f;
                     }
                     else
                     {
-                        b.SleepTime += step.dt;
-                        minSleepTime = Math.Min(minSleepTime, b.SleepTime);
+                        b._sleepTime += h;
+                        minSleepTime = Math.Min(minSleepTime, b._sleepTime);
                     }
                 }
 
-                if (minSleepTime >= Settings.TimeToSleep)
+                if (minSleepTime >= Settings.TimeToSleep && positionSolved)
                 {
                     for (int i = 0; i < BodyCount; ++i)
                     {
@@ -303,33 +311,38 @@ namespace FarseerPhysics.Dynamics
             }
         }
 
-        internal void SolveTOI(ref TimeStep subStep)
+        internal void SolveTOI(ref TimeStep subStep, int toiIndexA, int toiIndexB, bool warmstarting)
         {
-            _contactSolver.Reset(_contacts, ContactCount, subStep.dtRatio, false);
+            Debug.Assert(toiIndexA < BodyCount);
+            Debug.Assert(toiIndexB < BodyCount);
+
+            // Initialize the body state.
+            for (int i = 0; i < BodyCount; ++i)
+            {
+                Body b = Bodies[i];
+                _positions[i].c = b._sweep.C;
+                _positions[i].a = b._sweep.A;
+                _velocities[i].v = b._linearVelocity;
+                _velocities[i].w = b._angularVelocity;
+            }
+
+            _contactSolver.Reset(subStep, ContactCount, _contacts, _positions, _velocities, warmstarting);
 
             // Solve position constraints.
-            const float kTOIBaumgarte = 0.75f;
             for (int i = 0; i < Settings.TOIPositionIterations; ++i)
             {
-                bool contactsOkay = _contactSolver.SolvePositionConstraints(kTOIBaumgarte);
+                bool contactsOkay = _contactSolver.SolveTOIPositionConstraints(toiIndexA, toiIndexB);
                 if (contactsOkay)
                 {
                     break;
                 }
-
-                if (i == Settings.TOIPositionIterations - 1)
-                {
-                    i += 0;
-                }
             }
 
             // Leap of faith to new safe state.
-            for (int i = 0; i < BodyCount; ++i)
-            {
-                Body body = Bodies[i];
-                body.Sweep.A0 = body.Sweep.A;
-                body.Sweep.C0 = body.Sweep.C;
-            }
+            Bodies[toiIndexA]._sweep.C0 = _positions[toiIndexA].c;
+            Bodies[toiIndexA]._sweep.A0 = _positions[toiIndexA].a;
+            Bodies[toiIndexB]._sweep.C0 = _positions[toiIndexB].c;
+            Bodies[toiIndexB]._sweep.A0 = _positions[toiIndexB].a;
 
             // No warm starting is needed for TOI events because warm
             // starting impulses were applied in the discrete solver.
@@ -344,74 +357,72 @@ namespace FarseerPhysics.Dynamics
             // Don't store the TOI contact forces for warm starting
             // because they can be quite large.
 
+            float h = subStep.dt;
+
             // Integrate positions.
             for (int i = 0; i < BodyCount; ++i)
             {
-                Body b = Bodies[i];
+                Vector2 c = _positions[i].c;
+                float a = _positions[i].a;
+                Vector2 v = _velocities[i].v;
+                float w = _velocities[i].w;
 
-                if (b.BodyType == BodyType.Static)
+                // Check for large velocities
+                Vector2 translation = h * v;
+                if (Vector2.Dot(translation, translation) > Settings.MaxTranslationSquared)
                 {
-                    continue;
+                    float ratio = Settings.MaxTranslation / translation.Length();
+                    v *= ratio;
                 }
 
-                // Check for large velocities.
-                float translationx = subStep.dt * b.LinearVelocityInternal.X;
-                float translationy = subStep.dt * b.LinearVelocityInternal.Y;
-                float dot = translationx * translationx + translationy * translationy;
-                if (dot > Settings.MaxTranslationSquared)
-                {
-                    float norm = 1f / (float)Math.Sqrt(dot);
-                    float value = Settings.MaxTranslation * subStep.inv_dt;
-                    b.LinearVelocityInternal.X = value * (translationx * norm);
-                    b.LinearVelocityInternal.Y = value * (translationy * norm);
-                }
-
-                float rotation = subStep.dt * b.AngularVelocity;
+                float rotation = h * w;
                 if (rotation * rotation > Settings.MaxRotationSquared)
                 {
-                    if (rotation < 0.0)
-                    {
-                        b.AngularVelocityInternal = -subStep.inv_dt * Settings.MaxRotation;
-                    }
-                    else
-                    {
-                        b.AngularVelocityInternal = subStep.inv_dt * Settings.MaxRotation;
-                    }
+                    float ratio = Settings.MaxRotation / (float)Math.Abs(rotation);
+                    w *= ratio;
                 }
 
                 // Integrate
-                b.Sweep.C.X += subStep.dt * b.LinearVelocityInternal.X;
-                b.Sweep.C.Y += subStep.dt * b.LinearVelocityInternal.Y;
-                b.Sweep.A += subStep.dt * b.AngularVelocityInternal;
+                c += h * v;
+                a += h * w;
 
-                // Compute new transform
-                b.SynchronizeTransform();
+                _positions[i].c = c;
+                _positions[i].a = a;
+                _velocities[i].v = v;
+                _velocities[i].w = w;
 
-                // Note: shapes are synchronized later.
+                // Sync bodies
+                Body body = Bodies[i];
+                body._sweep.C = c;
+                body._sweep.A = a;
+                body._linearVelocity = v;
+                body._angularVelocity = w;
+                body.SynchronizeTransform();
             }
 
-            Report(_contactSolver.Constraints);
+            Report(_contactSolver._velocityConstraints);
         }
 
         public void Add(Body body)
         {
-            Debug.Assert(BodyCount < _bodyCapacity);
+            Debug.Assert(BodyCount < BodyCapacity);
+            body.IslandIndex = BodyCount;
             Bodies[BodyCount++] = body;
         }
 
         public void Add(Contact contact)
         {
-            Debug.Assert(ContactCount < _contactCapacity);
+            Debug.Assert(ContactCount < ContactCapacity);
             _contacts[ContactCount++] = contact;
         }
 
         public void Add(Joint joint)
         {
-            Debug.Assert(JointCount < _jointCapacity);
+            Debug.Assert(JointCount < JointCapacity);
             _joints[JointCount++] = joint;
         }
 
-        private void Report(ContactConstraint[] constraints)
+        private void Report(ContactVelocityConstraint[] constraints)
         {
             if (_contactManager == null)
                 return;
@@ -420,17 +431,17 @@ namespace FarseerPhysics.Dynamics
             {
                 Contact c = _contacts[i];
 
+                //FPE optimization: We don't store the impulses and send it to the delegate. We just send the whole contact.
+                //FPE feature: added after collision
                 if (c.FixtureA.AfterCollision != null)
-                    c.FixtureA.AfterCollision(c.FixtureA, c.FixtureB, c);
+                    c.FixtureA.AfterCollision(c.FixtureA, c.FixtureB, c, constraints[i]);
 
                 if (c.FixtureB.AfterCollision != null)
-                    c.FixtureB.AfterCollision(c.FixtureB, c.FixtureA, c);
+                    c.FixtureB.AfterCollision(c.FixtureB, c.FixtureA, c, constraints[i]);
 
                 if (_contactManager.PostSolve != null)
                 {
-                    ContactConstraint cc = constraints[i];
-
-                    _contactManager.PostSolve(c, cc);
+                    _contactManager.PostSolve(c, constraints[i]);
                 }
             }
         }

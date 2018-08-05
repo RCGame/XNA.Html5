@@ -1,7 +1,7 @@
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace FarseerPhysics.Utility
+namespace FarseerPhysics.Samples.DrawingSystem
 {
     public struct Sprite
     {
@@ -10,8 +10,8 @@ namespace FarseerPhysics.Utility
 
         public Sprite(Texture2D texture, Vector2 origin)
         {
-            this.Texture = texture;
-            this.Origin = origin;
+            Texture = texture;
+            Origin = origin;
         }
 
         public Sprite(Texture2D sprite)

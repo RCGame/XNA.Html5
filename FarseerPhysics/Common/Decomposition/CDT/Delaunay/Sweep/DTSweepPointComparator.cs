@@ -1,4 +1,4 @@
-/* Poly2Tri
+﻿/* Poly2Tri
  * Copyright (c) 2009-2010, Poly2Tri Contributors
  * http://code.google.com/p/poly2tri/
  *
@@ -31,9 +31,9 @@
 
 using System.Collections.Generic;
 
-namespace Poly2Tri.Triangulation.Delaunay.Sweep
+namespace FarseerPhysics.Common.Decomposition.CDT.Delaunay.Sweep
 {
-    public class DTSweepPointComparator : IComparer<TriangulationPoint>
+    internal class DTSweepPointComparator : IComparer<TriangulationPoint>
     {
         #region IComparer<TriangulationPoint> Members
 
