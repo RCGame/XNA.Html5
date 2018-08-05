@@ -5,6 +5,10 @@ VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XNA.Html5", "XNA.Html5\XNA.Html5.csproj", "{CECD56D2-EE56-4784-9056-9E2405BCC2C0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FarseerPhysics", "FarseerPhysics\FarseerPhysics.csproj", "{6C754D1B-9E10-470D-A899-7316327577FC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FarseerPhysics.Demo", "FarseerPhysics.Demo\FarseerPhysics.Demo.csproj", "{85A8E10B-645D-44DF-8E50-95B97FB86DAA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{CECD56D2-EE56-4784-9056-9E2405BCC2C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CECD56D2-EE56-4784-9056-9E2405BCC2C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CECD56D2-EE56-4784-9056-9E2405BCC2C0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6C754D1B-9E10-470D-A899-7316327577FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C754D1B-9E10-470D-A899-7316327577FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C754D1B-9E10-470D-A899-7316327577FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C754D1B-9E10-470D-A899-7316327577FC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{85A8E10B-645D-44DF-8E50-95B97FB86DAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{85A8E10B-645D-44DF-8E50-95B97FB86DAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{85A8E10B-645D-44DF-8E50-95B97FB86DAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{85A8E10B-645D-44DF-8E50-95B97FB86DAA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
