@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
+using Bridge;
+using Bridge.Html5;
 
 namespace Microsoft.Xna.Framework
 {
@@ -39,6 +41,16 @@ namespace Microsoft.Xna.Framework
         protected virtual void Draw(GameTime gameTime)
         {
 
+        }
+
+        public void Run()
+        {
+            HTMLCanvasElement canvas = new HTMLCanvasElement();
+            canvas.Width = Window.OuterWidth;
+            canvas.Height = Window.OuterHeight;
+            Document.Body.AppendChild(canvas);
+            var ctx = canvas.GetContext("2d").As<CanvasRenderingContext2D>();
+            ctx.FillRect(20, 20, 150, 100);
         }
     }
 }
