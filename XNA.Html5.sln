@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27703.2000
+VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XNA.Html5", "XNA.Html5.csproj", "{CECD56D2-EE56-4784-9056-9E2405BCC2C0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XNA.Html5", "XNA.Html5\XNA.Html5.csproj", "{CECD56D2-EE56-4784-9056-9E2405BCC2C0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
