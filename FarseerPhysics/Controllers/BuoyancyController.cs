@@ -45,7 +45,8 @@ namespace FarseerPhysics.Controllers
         /// <param name="linearDragCoefficient">Linear drag coefficient of the fluid</param>
         /// <param name="rotationalDragCoefficient">Rotational drag coefficient of the fluid</param>
         /// <param name="gravity">The direction gravity acts. Buoyancy force will act in opposite direction of gravity.</param>
-        public BuoyancyController(AABB container, float density, float linearDragCoefficient, float rotationalDragCoefficient, Vector2 gravity)
+        public BuoyancyController(AABB container, float density, float linearDragCoefficient,
+                                  float rotationalDragCoefficient, Vector2 gravity)
             : base(ControllerType.BuoyancyController)
         {
             Container = container;
@@ -99,7 +100,7 @@ namespace FarseerPhysics.Controllers
                     Shape shape = fixture.Shape;
 
                     Vector2 sc;
-                    float sarea = shape.ComputeSubmergedArea(ref _normal, _offset, ref body._xf, out sc);
+                    float sarea = shape.ComputeSubmergedArea(_normal, _offset, body.Xf, out sc);
                     area += sarea;
                     areac.X += sarea * sc.X;
                     areac.Y += sarea * sc.Y;

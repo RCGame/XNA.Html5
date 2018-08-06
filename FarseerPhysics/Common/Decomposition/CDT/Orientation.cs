@@ -1,4 +1,4 @@
-﻿/* Poly2Tri
+/* Poly2Tri
  * Copyright (c) 2009-2010, Poly2Tri Contributors
  * http://code.google.com/p/poly2tri/
  *
@@ -31,7 +31,7 @@
 
 namespace FarseerPhysics.Common.Decomposition.CDT
 {
-    internal enum Orientation
+    public enum Orientation
     {
         CW,
         CCW,

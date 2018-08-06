@@ -1,4 +1,4 @@
-﻿/* Poly2Tri
+/* Poly2Tri
  * Copyright (c) 2009-2010, Poly2Tri Contributors
  * http://code.google.com/p/poly2tri/
  *
@@ -31,11 +31,11 @@
 
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using FarseerPhysics.Common.Decomposition.CDT.Delaunay;
+using Poly2Tri.Triangulation.Delaunay;
 
-namespace FarseerPhysics.Common.Decomposition.CDT
+namespace Poly2Tri.Triangulation
 {
-    internal abstract class TriangulationContext
+    public abstract class TriangulationContext
     {
         public readonly List<TriangulationPoint> Points = new List<TriangulationPoint>(200);
         public readonly List<DelaunayTriangle> Triangles = new List<DelaunayTriangle>();
@@ -69,7 +69,9 @@ namespace FarseerPhysics.Common.Decomposition.CDT
 
         public abstract TriangulationConstraint NewConstraint(TriangulationPoint a, TriangulationPoint b);
 
+#if !NETFX_CORE
         [MethodImpl(MethodImplOptions.Synchronized)]
+#endif
         public void Update(string message)
         {
         }

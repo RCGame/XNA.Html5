@@ -1,4 +1,4 @@
-﻿/* Poly2Tri
+/* Poly2Tri
  * Copyright (c) 2009-2010, Poly2Tri Contributors
  * http://code.google.com/p/poly2tri/
  *
@@ -29,7 +29,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace FarseerPhysics.Common.Decomposition.CDT.Delaunay.Sweep
+namespace Poly2Tri.Triangulation.Delaunay.Sweep
 {
     /**
      * 
@@ -37,7 +37,7 @@ namespace FarseerPhysics.Common.Decomposition.CDT.Delaunay.Sweep
      *
      */
 
-    internal class DTSweepContext : TriangulationContext
+    public class DTSweepContext : TriangulationContext
     {
         // Inital triangle factor, seed triangle will extend 30% of 
         // PointSet width to both left and right.

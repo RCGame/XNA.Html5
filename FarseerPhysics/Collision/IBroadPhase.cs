@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using FarseerPhysics.Dynamics;
 using Microsoft.Xna.Framework;
 
@@ -26,7 +26,5 @@ namespace FarseerPhysics.Collision
         void Query(Func<int, bool> callback, ref AABB aabb);
 
         void RayCast(Func<RayCastInput, int, float> callback, ref RayCastInput input);
-
-        void ShiftOrigin(Vector2 newOrigin);
     }
 }

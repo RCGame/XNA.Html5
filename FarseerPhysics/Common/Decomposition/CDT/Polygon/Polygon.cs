@@ -1,4 +1,4 @@
-﻿/* Poly2Tri
+/* Poly2Tri
  * Copyright (c) 2009-2010, Poly2Tri Contributors
  * http://code.google.com/p/poly2tri/
  *
@@ -41,11 +41,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using FarseerPhysics.Common.Decomposition.CDT.Delaunay;
+using Poly2Tri.Triangulation.Delaunay;
 
-namespace FarseerPhysics.Common.Decomposition.CDT.Polygon
+namespace Poly2Tri.Triangulation.Polygon
 {
-    internal class Polygon : Triangulatable
+    public class Polygon : Triangulatable
     {
         protected List<Polygon> _holes;
         protected PolygonPoint _last;

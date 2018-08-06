@@ -1,4 +1,4 @@
-﻿/* Poly2Tri
+/* Poly2Tri
  * Copyright (c) 2009-2010, Poly2Tri Contributors
  * http://code.google.com/p/poly2tri/
  *
@@ -30,11 +30,11 @@
  */
 
 using System;
-using FarseerPhysics.Common.Decomposition.CDT.Polygon;
+using Poly2Tri.Triangulation.Polygon;
 
-namespace FarseerPhysics.Common.Decomposition.CDT.Util
+namespace Poly2Tri.Triangulation.Util
 {
-    internal class PolygonGenerator
+    public class PolygonGenerator
     {
         private static readonly Random RNG = new Random();
 

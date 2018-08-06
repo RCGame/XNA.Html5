@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using FarseerPhysics.Collision.Shapes;
 using FarseerPhysics.Common;
@@ -10,39 +10,81 @@ namespace FarseerPhysics.Factories
 {
     public static class BodyFactory
     {
-        public static Body CreateBody(World world, Vector2 position = new Vector2(), float rotation = 0, BodyType bodyType = BodyType.Static, object userData = null)
+        public static Body CreateBody(World world)
         {
-            return new Body(world, position, rotation, bodyType, userData);
+            return CreateBody(world, null);
         }
 
-        public static Body CreateEdge(World world, Vector2 start, Vector2 end, object userData = null)
+        public static Body CreateBody(World world, object userData)
+        {
+            Body body = new Body(world, userData);
+            return body;
+        }
+
+        public static Body CreateBody(World world, Vector2 position)
+        {
+            return CreateBody(world, position, null);
+        }
+
+        public static Body CreateBody(World world, Vector2 position, object userData)
+        {
+            Body body = CreateBody(world, userData);
+            body.Position = position;
+            return body;
+        }
+
+        public static Body CreateEdge(World world, Vector2 start, Vector2 end)
+        {
+            return CreateEdge(world, start, end, null);
+        }
+
+        public static Body CreateEdge(World world, Vector2 start, Vector2 end, object userData)
         {
             Body body = CreateBody(world);
-            body.UserData = userData;
-
-            FixtureFactory.AttachEdge(start, end, body);
+            FixtureFactory.AttachEdge(start, end, body, userData);
             return body;
         }
 
-        public static Body CreateChainShape(World world, Vertices vertices, Vector2 position = new Vector2(), object userData = null)
+        public static Body CreateLoopShape(World world, Vertices vertices)
+        {
+            return CreateLoopShape(world, vertices, null);
+        }
+
+        public static Body CreateLoopShape(World world, Vertices vertices, object userData)
+        {
+            return CreateLoopShape(world, vertices, Vector2.Zero, userData);
+        }
+
+        public static Body CreateLoopShape(World world, Vertices vertices, Vector2 position)
+        {
+            return CreateLoopShape(world, vertices, position, null);
+        }
+
+        public static Body CreateLoopShape(World world, Vertices vertices, Vector2 position,
+                                           object userData)
         {
             Body body = CreateBody(world, position);
-            body.UserData = userData;
-
-            FixtureFactory.AttachChainShape(vertices, body);
+            FixtureFactory.AttachLoopShape(vertices, body, userData);
             return body;
         }
 
-        public static Body CreateLoopShape(World world, Vertices vertices, Vector2 position = new Vector2(), object userData = null)
+        public static Body CreateRectangle(World world, float width, float height, float density)
         {
-            Body body = CreateBody(world, position);
-            body.UserData = userData;
-
-            FixtureFactory.AttachLoopShape(vertices, body);
-            return body;
+            return CreateRectangle(world, width, height, density, null);
         }
 
-        public static Body CreateRectangle(World world, float width, float height, float density, Vector2 position = new Vector2(), float rotation = 0, BodyType bodyType = BodyType.Static, object userData = null)
+        public static Body CreateRectangle(World world, float width, float height, float density, object userData)
+        {
+            return CreateRectangle(world, width, height, density, Vector2.Zero, userData);
+        }
+
+        public static Body CreateRectangle(World world, float width, float height, float density, Vector2 position)
+        {
+            return CreateRectangle(world, width, height, density, position, null);
+        }
+
+        public static Body CreateRectangle(World world, float width, float height, float density, Vector2 position,
+                                           object userData)
         {
             if (width <= 0)
                 throw new ArgumentOutOfRangeException("width", "Width must be more than 0 meters");
@@ -50,44 +92,119 @@ namespace FarseerPhysics.Factories
             if (height <= 0)
                 throw new ArgumentOutOfRangeException("height", "Height must be more than 0 meters");
 
-            Body body = CreateBody(world, position, rotation, bodyType, userData);
-
+            Body newBody = CreateBody(world, position);
             Vertices rectangleVertices = PolygonTools.CreateRectangle(width / 2, height / 2);
-            FixtureFactory.AttachPolygon(rectangleVertices, density, body);
+            PolygonShape rectangleShape = new PolygonShape(rectangleVertices, density);
+            newBody.CreateFixture(rectangleShape, userData);
 
-            return body;
+            return newBody;
         }
 
-        public static Body CreateCircle(World world, float radius, float density, Vector2 position = new Vector2(), BodyType bodyType = BodyType.Static, object userData = null)
+        public static Body CreateCircle(World world, float radius, float density)
         {
-            Body body = CreateBody(world, position, 0, bodyType, userData);
-            FixtureFactory.AttachCircle(radius, density, body);
-            return body;
+            return CreateCircle(world, radius, density, null);
         }
 
-        public static Body CreateEllipse(World world, float xRadius, float yRadius, int edges, float density, Vector2 position = new Vector2(), float rotation = 0, BodyType bodyType = BodyType.Static, object userData = null)
+        public static Body CreateCircle(World world, float radius, float density, object userData)
         {
-            Body body = CreateBody(world, position, rotation, bodyType, userData);
-            FixtureFactory.AttachEllipse(xRadius, yRadius, edges, density, body);
-            return body;
+            return CreateCircle(world, radius, density, Vector2.Zero, userData);
         }
 
-        public static Body CreatePolygon(World world, Vertices vertices, float density, Vector2 position = new Vector2(), float rotation = 0, BodyType bodyType = BodyType.Static, object userData = null)
+        public static Body CreateCircle(World world, float radius, float density, Vector2 position)
         {
-            Body body = CreateBody(world, position, rotation, bodyType, userData);
-            FixtureFactory.AttachPolygon(vertices, density, body);
+            return CreateCircle(world, radius, density, position, null);
+        }
+
+        public static Body CreateCircle(World world, float radius, float density, Vector2 position, object userData)
+        {
+            Body body = CreateBody(world, position);
+            FixtureFactory.AttachCircle(radius, density, body, userData);
             return body;
         }
 
-        public static Body CreateCompoundPolygon(World world, List<Vertices> list, float density, Vector2 position = new Vector2(), float rotation = 0, BodyType bodyType = BodyType.Static, object userData = null)
+        public static Body CreateEllipse(World world, float xRadius, float yRadius, int edges, float density)
+        {
+            return CreateEllipse(world, xRadius, yRadius, edges, density, null);
+        }
+
+        public static Body CreateEllipse(World world, float xRadius, float yRadius, int edges, float density,
+                                         object userData)
+        {
+            return CreateEllipse(world, xRadius, yRadius, edges, density, Vector2.Zero, userData);
+        }
+
+        public static Body CreateEllipse(World world, float xRadius, float yRadius, int edges, float density,
+                                         Vector2 position)
+        {
+            return CreateEllipse(world, xRadius, yRadius, edges, density, position, null);
+        }
+
+        public static Body CreateEllipse(World world, float xRadius, float yRadius, int edges, float density,
+                                         Vector2 position, object userData)
+        {
+            Body body = CreateBody(world, position);
+            FixtureFactory.AttachEllipse(xRadius, yRadius, edges, density, body, userData);
+            return body;
+        }
+
+        public static Body CreatePolygon(World world, Vertices vertices, float density)
+        {
+            return CreatePolygon(world, vertices, density, null);
+        }
+
+        public static Body CreatePolygon(World world, Vertices vertices, float density, object userData)
+        {
+            return CreatePolygon(world, vertices, density, Vector2.Zero, userData);
+        }
+
+        public static Body CreatePolygon(World world, Vertices vertices, float density, Vector2 position)
+        {
+            return CreatePolygon(world, vertices, density, position, null);
+        }
+
+        public static Body CreatePolygon(World world, Vertices vertices, float density, Vector2 position,
+                                         object userData)
+        {
+            Body body = CreateBody(world, position);
+            FixtureFactory.AttachPolygon(vertices, density, body, userData);
+            return body;
+        }
+
+        public static Body CreateCompoundPolygon(World world, List<Vertices> list, float density)
+        {
+            return CreateCompoundPolygon(world, list, density, BodyType.Static);
+        }
+
+        public static Body CreateCompoundPolygon(World world, List<Vertices> list, float density,
+                                                 object userData)
+        {
+            return CreateCompoundPolygon(world, list, density, Vector2.Zero, userData);
+        }
+
+        public static Body CreateCompoundPolygon(World world, List<Vertices> list, float density,
+                                                 Vector2 position)
+        {
+            return CreateCompoundPolygon(world, list, density, position, null);
+        }
+
+        public static Body CreateCompoundPolygon(World world, List<Vertices> list, float density,
+                                                 Vector2 position, object userData)
         {
             //We create a single body
-            Body body = CreateBody(world, position, rotation, bodyType, userData);
-            FixtureFactory.AttachCompoundPolygon(list, density, body);
-            return body;
+            Body polygonBody = CreateBody(world, position);
+            FixtureFactory.AttachCompoundPolygon(list, density, polygonBody, userData);
+            return polygonBody;
         }
 
-        public static Body CreateGear(World world, float radius, int numberOfTeeth, float tipPercentage, float toothHeight, float density, Vector2 position = new Vector2(), float rotation = 0, BodyType bodyType = BodyType.Static, object userData = null)
+
+        public static Body CreateGear(World world, float radius, int numberOfTeeth, float tipPercentage,
+                                      float toothHeight, float density)
+        {
+            return CreateGear(world, radius, numberOfTeeth, tipPercentage, toothHeight, density, null);
+        }
+
+        public static Body CreateGear(World world, float radius, int numberOfTeeth, float tipPercentage,
+                                      float toothHeight, float density, object userData)
         {
             Vertices gearPolygon = PolygonTools.CreateGear(radius, numberOfTeeth, tipPercentage, toothHeight);
 
@@ -95,29 +212,65 @@ namespace FarseerPhysics.Factories
             if (!gearPolygon.IsConvex())
             {
                 //Decompose the gear:
-                List<Vertices> list = Triangulate.ConvexPartition(gearPolygon, TriangulationAlgorithm.Earclip);
+                List<Vertices> list = EarclipDecomposer.ConvexPartition(gearPolygon);
 
-                return CreateCompoundPolygon(world, list, density, position, rotation, bodyType, userData);
+                return CreateCompoundPolygon(world, list, density, userData);
             }
 
-            return CreatePolygon(world, gearPolygon, density, position, rotation, bodyType, userData);
+            return CreatePolygon(world, gearPolygon, density, userData);
         }
 
-        public static Body CreateCapsule(World world, float height, float topRadius, int topEdges, float bottomRadius, int bottomEdges, float density, Vector2 position = new Vector2(), float rotation = 0, BodyType bodyType = BodyType.Static, object userData = null)
+        /// <summary>
+        /// Creates a capsule.
+        /// Note: Automatically decomposes the capsule if it contains too many vertices (controlled by Settings.MaxPolygonVertices)
+        /// </summary>
+        /// <param name="world">The world.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="topRadius">The top radius.</param>
+        /// <param name="topEdges">The top edges.</param>
+        /// <param name="bottomRadius">The bottom radius.</param>
+        /// <param name="bottomEdges">The bottom edges.</param>
+        /// <param name="density">The density.</param>
+        /// <param name="position">The position.</param>
+        /// <returns></returns>
+        public static Body CreateCapsule(World world, float height, float topRadius, int topEdges,
+                                         float bottomRadius,
+                                         int bottomEdges, float density, Vector2 position, object userData)
         {
             Vertices verts = PolygonTools.CreateCapsule(height, topRadius, topEdges, bottomRadius, bottomEdges);
+
+            Body body;
 
             //There are too many vertices in the capsule. We decompose it.
             if (verts.Count >= Settings.MaxPolygonVertices)
             {
-                List<Vertices> vertList = Triangulate.ConvexPartition(verts, TriangulationAlgorithm.Earclip);
-                return CreateCompoundPolygon(world, vertList, density, position, rotation, bodyType, userData);
+                List<Vertices> vertList = EarclipDecomposer.ConvexPartition(verts);
+                body = CreateCompoundPolygon(world, vertList, density, userData);
+                body.Position = position;
+
+                return body;
             }
 
-            return CreatePolygon(world, verts, density, position, rotation, bodyType, userData);
+            body = CreatePolygon(world, verts, density, userData);
+            body.Position = position;
+
+            return body;
         }
 
-        public static Body CreateCapsule(World world, float height, float endRadius, float density, Vector2 position = new Vector2(), float rotation = 0, BodyType bodyType = BodyType.Static, object userData = null)
+        public static Body CreateCapsule(World world, float height, float topRadius, int topEdges,
+                                         float bottomRadius,
+                                         int bottomEdges, float density, Vector2 position)
+        {
+            return CreateCapsule(world, height, topRadius, topEdges, bottomRadius, bottomEdges, density, position, null);
+        }
+
+        public static Body CreateCapsule(World world, float height, float endRadius, float density)
+        {
+            return CreateCapsule(world, height, endRadius, density, null);
+        }
+
+        public static Body CreateCapsule(World world, float height, float endRadius, float density,
+                                         object userData)
         {
             //Create the middle rectangle
             Vertices rectangle = PolygonTools.CreateRectangle(endRadius, height / 2);
@@ -125,67 +278,122 @@ namespace FarseerPhysics.Factories
             List<Vertices> list = new List<Vertices>();
             list.Add(rectangle);
 
-            Body body = CreateCompoundPolygon(world, list, density, position, rotation, bodyType, userData);
-            FixtureFactory.AttachCircle(endRadius, density, body, new Vector2(0, height / 2));
-            FixtureFactory.AttachCircle(endRadius, density, body, new Vector2(0, -(height / 2)));
+            Body body = CreateCompoundPolygon(world, list, density, userData);
 
             //Create the two circles
-            //CircleShape topCircle = new CircleShape(endRadius, density);
-            //topCircle.Position = new Vector2(0, height / 2);
-            //body.CreateFixture(topCircle);
+            CircleShape topCircle = new CircleShape(endRadius, density);
+            topCircle.Position = new Vector2(0, height / 2);
+            body.CreateFixture(topCircle, userData);
 
-            //CircleShape bottomCircle = new CircleShape(endRadius, density);
-            //bottomCircle.Position = new Vector2(0, -(height / 2));
-            //body.CreateFixture(bottomCircle);
+            CircleShape bottomCircle = new CircleShape(endRadius, density);
+            bottomCircle.Position = new Vector2(0, -(height / 2));
+            body.CreateFixture(bottomCircle, userData);
             return body;
         }
 
-        public static Body CreateRoundedRectangle(World world, float width, float height, float xRadius, float yRadius, int segments, float density, Vector2 position = new Vector2(), float rotation = 0, BodyType bodyType = BodyType.Static, object userData = null)
+        /// <summary>
+        /// Creates a rounded rectangle.
+        /// Note: Automatically decomposes the capsule if it contains too many vertices (controlled by Settings.MaxPolygonVertices)
+        /// </summary>
+        /// <param name="world">The world.</param>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="xRadius">The x radius.</param>
+        /// <param name="yRadius">The y radius.</param>
+        /// <param name="segments">The segments.</param>
+        /// <param name="density">The density.</param>
+        /// <param name="position">The position.</param>
+        /// <returns></returns>
+        public static Body CreateRoundedRectangle(World world, float width, float height, float xRadius,
+                                                  float yRadius,
+                                                  int segments, float density, Vector2 position,
+                                                  object userData)
         {
             Vertices verts = PolygonTools.CreateRoundedRectangle(width, height, xRadius, yRadius, segments);
 
             //There are too many vertices in the capsule. We decompose it.
             if (verts.Count >= Settings.MaxPolygonVertices)
             {
-                List<Vertices> vertList = Triangulate.ConvexPartition(verts, TriangulationAlgorithm.Earclip);
-                return CreateCompoundPolygon(world, vertList, density, position, rotation, bodyType, userData);
+                List<Vertices> vertList = EarclipDecomposer.ConvexPartition(verts);
+                Body body = CreateCompoundPolygon(world, vertList, density, userData);
+                body.Position = position;
+                return body;
             }
 
-            return CreatePolygon(world, verts, density, position, rotation, bodyType, userData);
+            return CreatePolygon(world, verts, density);
         }
 
-        public static Body CreateLineArc(World world, float radians, int sides, float radius, bool closed = false, Vector2 position = new Vector2(), float rotation = 0, BodyType bodyType = BodyType.Static, object userData = null)
+        public static Body CreateRoundedRectangle(World world, float width, float height, float xRadius,
+                                                  float yRadius,
+                                                  int segments, float density, Vector2 position)
         {
-            Body body = CreateBody(world, position, rotation, bodyType, userData);
-            FixtureFactory.AttachLineArc(radians, sides, radius, closed, body);
-            return body;
+            return CreateRoundedRectangle(world, width, height, xRadius, yRadius, segments, density, position, null);
         }
 
-        public static Body CreateSolidArc(World world, float density, float radians, int sides, float radius, Vector2 position = new Vector2(), float rotation = 0, BodyType bodyType = BodyType.Static, object userData = null)
+        public static Body CreateRoundedRectangle(World world, float width, float height, float xRadius,
+                                                  float yRadius,
+                                                  int segments, float density)
         {
-            Body body = CreateBody(world, position, rotation, bodyType, userData);
-            FixtureFactory.AttachSolidArc(density, radians, sides, radius, body);
-
-            return body;
+            return CreateRoundedRectangle(world, width, height, xRadius, yRadius, segments, density, null);
         }
 
-        public static BreakableBody CreateBreakableBody(World world, Vertices vertices, float density, Vector2 position = new Vector2(), float rotation = 0)
+        public static Body CreateRoundedRectangle(World world, float width, float height, float xRadius,
+                                                  float yRadius,
+                                                  int segments, float density, object userData)
         {
-            //TODO: Implement a Voronoi diagram algorithm to split up the vertices
-            List<Vertices> triangles = Triangulate.ConvexPartition(vertices, TriangulationAlgorithm.Earclip);
+            return CreateRoundedRectangle(world, width, height, xRadius, yRadius, segments, density, Vector2.Zero,
+                                          userData);
+        }
 
-            BreakableBody breakableBody = new BreakableBody(world, triangles, density, position, rotation);
+        public static BreakableBody CreateBreakableBody(World world, Vertices vertices, float density)
+        {
+            return CreateBreakableBody(world, vertices, density, null);
+        }
+
+        public static BreakableBody CreateBreakableBody(World world, Vertices vertices, float density, object userData)
+        {
+            return CreateBreakableBody(world, vertices, density, Vector2.Zero, userData);
+        }
+
+        /// <summary>
+        /// Creates a breakable body. You would want to remove collinear points before using this.
+        /// </summary>
+        /// <param name="world">The world.</param>
+        /// <param name="vertices">The vertices.</param>
+        /// <param name="density">The density.</param>
+        /// <param name="position">The position.</param>
+        /// <returns></returns>
+        public static BreakableBody CreateBreakableBody(World world, Vertices vertices, float density, Vector2 position,
+                                                        object userData)
+        {
+            List<Vertices> triangles = EarclipDecomposer.ConvexPartition(vertices);
+
+            BreakableBody breakableBody = new BreakableBody(triangles, world, density, userData);
             breakableBody.MainBody.Position = position;
             world.AddBreakableBody(breakableBody);
+
             return breakableBody;
         }
 
-        public static BreakableBody CreateBreakableBody(World world, IEnumerable<Shape> shapes, Vector2 position = new Vector2(), float rotation = 0)
+        public static BreakableBody CreateBreakableBody(World world, Vertices vertices, float density, Vector2 position)
         {
-            BreakableBody breakableBody = new BreakableBody(world, shapes, position, rotation);
-            breakableBody.MainBody.Position = position;
-            world.AddBreakableBody(breakableBody);
-            return breakableBody;
+            return CreateBreakableBody(world, vertices, density, position, null);
+        }
+
+        public static Body CreateLineArc(World world, float radians, int sides, float radius, Vector2 position,
+                                         float angle, bool closed)
+        {
+            Body body = CreateBody(world);
+            FixtureFactory.AttachLineArc(radians, sides, radius, position, angle, closed, body);
+            return body;
+        }
+
+        public static Body CreateSolidArc(World world, float density, float radians, int sides, float radius,
+                                          Vector2 position, float angle)
+        {
+            Body body = CreateBody(world);
+            FixtureFactory.AttachSolidArc(density, radians, sides, radius, position, angle, body);
+            return body;
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using FarseerPhysics.Common.PhysicsLogic;
+using System;
 using FarseerPhysics.Dynamics;
 
 namespace FarseerPhysics.Controllers
