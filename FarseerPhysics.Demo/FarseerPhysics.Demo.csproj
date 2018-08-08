@@ -64,9 +64,13 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\Assets\Background.png" />
+    <Content Include="Content\Assets\Ball.png" />
+    <Content Include="Content\Assets\Box.png" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Agent.cs" />
     <Compile Include="App.cs" />
     <Compile Include="DemoGameScreen.cs" />
     <Compile Include="PhysicsGame.cs" />
