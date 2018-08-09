@@ -12,7 +12,7 @@ namespace Microsoft.Xna.Framework.Input.Touch
 
         public static TouchCollection GetState()
         {
-            throw new NotImplementedException();
+            return new TouchCollection();
         }
     }
 }
