@@ -20,8 +20,8 @@ namespace Microsoft.Xna.Framework.Graphics
         public GraphicsDevice()
         {
             Html5.Canvas = new HTMLCanvasElement();
-            Html5.Canvas.Width = Window.OuterWidth;
-            Html5.Canvas.Height = Window.OuterHeight;
+            Html5.Canvas.Width = Window.InnerWidth;
+            Html5.Canvas.Height = Window.InnerHeight;
             Document.Body.AppendChild(Html5.Canvas);
             Html5.Context = Html5.Canvas.GetContext("2d").As<CanvasRenderingContext2D>();
             Console.WriteLine("canvas ready");
