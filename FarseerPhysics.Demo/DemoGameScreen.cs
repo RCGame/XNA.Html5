@@ -53,6 +53,7 @@ namespace FarseerPhysics.Samples.Demos
                         touchOn = touch.Position;
                         break;
                     case TouchLocationState.Released:
+                        touchOff = touch.Position;
                         var force = touchOff - touchOn;
                         agent.Body.ApplyForce(Vector2.Multiply(force, 50f));
                         break;

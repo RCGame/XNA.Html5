@@ -6,10 +6,16 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Xna.Framework.Graphics
 {
-    public class Texture2D
+    public class Texture2D : GraphicsResource
     {
         public int Width { get; }
         public int Height { get; }
+
+        public Texture2D()
+        {
+
+        }
+
         public Texture2D(GraphicsDevice graphicsDevice, int width, int height)
         {
 

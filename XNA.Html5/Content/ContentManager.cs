@@ -9,9 +9,16 @@ namespace Microsoft.Xna.Framework.Content
     public class ContentManager
     {
         public string RootDirectory { get; set; }
-        public T Load<T>(string name)
+        public T Load<T>(string name) where T : Graphics.GraphicsResource, new()
         {
-            throw new NotImplementedException();
+            T t = new T();
+            t.Name = RootDirectory + "/" + name;
+            return t;
+        }
+
+        public ContentManager()
+        {
+
         }
 
         public ContentManager(IServiceProvider serviceProvider, string rootDirectory)

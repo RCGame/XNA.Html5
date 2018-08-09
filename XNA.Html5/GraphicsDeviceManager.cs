@@ -17,7 +17,7 @@ namespace Microsoft.Xna.Framework
 
         public GraphicsDeviceManager(Game game)
         {
-
+            game.GraphicsDevice = new GraphicsDevice();
         }
 
         public void ApplyChanges()

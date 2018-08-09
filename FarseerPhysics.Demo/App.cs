@@ -4,6 +4,7 @@ using System.Linq;
 using Bridge;
 using Bridge.Html5;
 using Microsoft.Xna.Framework;
+using FarseerPhysics.Samples;
 
 namespace FarseerPhysics.Demo
 {
@@ -11,7 +12,7 @@ namespace FarseerPhysics.Demo
     {
         public static void Main()
         {
-            Game game = new Game();
+            PhysicsGame game = new PhysicsGame();
             game.Run();
         }
     }

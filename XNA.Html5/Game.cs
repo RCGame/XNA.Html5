@@ -35,7 +35,8 @@ namespace Microsoft.Xna.Framework
 
         public Game()
         {
-            _targetElapsedTime = TimeSpan.FromMilliseconds(1000f);
+            _targetElapsedTime = TimeSpan.FromMilliseconds(1000f / 20f);
+            Content = new ContentManager();
             _components = new GameComponentCollection();
         }
 
