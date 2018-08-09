@@ -20,15 +20,22 @@ namespace Microsoft.Xna.Framework
         private GameTime gameTime;
         private DateTime timeNow, t1, t2;
         private int leadingTime;
-        private const int FPS = 1;
         private int timeoutId = 0;
+        private TimeSpan _targetElapsedTime;
         public GameComponentCollection Components
         {
             get { return _components; }
         }
 
+        public TimeSpan TargetElapsedTime
+        {
+            get { return _targetElapsedTime; }
+            set { _targetElapsedTime = value; }
+        }
+
         public Game()
         {
+            _targetElapsedTime = TimeSpan.FromMilliseconds(1000f);
             _components = new GameComponentCollection();
         }
 
@@ -69,7 +76,7 @@ namespace Microsoft.Xna.Framework
             gameTime = new GameTime();
             gameTime.TotalGameTime = new TimeSpan(0);
             gameTime.ElapsedGameTime = new TimeSpan(0);
-            timeNow = DateTime.Now.Subtract(new TimeSpan(0, 0, 0, 0, Convert.ToInt32(1000f / (double)FPS)));
+            timeNow = DateTime.Now;
             GameLoop();
         }
 
@@ -83,7 +90,7 @@ namespace Microsoft.Xna.Framework
             Update(gameTime);
             Draw(gameTime);
             t2 = DateTime.Now;
-            leadingTime = Convert.ToInt32((1000f / (double)FPS) - (t2 - t1).TotalMilliseconds);
+            leadingTime = Convert.ToInt32(_targetElapsedTime.TotalMilliseconds - (t2 - t1).TotalMilliseconds);
             System.Console.WriteLine("elapsedTime: " + gameTime.ElapsedGameTime.TotalMilliseconds + " totalTime: " + gameTime.TotalGameTime.TotalSeconds + " leadingTime: " + leadingTime + " processingTime: " + (t2 - t1).TotalMilliseconds);
             if (leadingTime <= 0)
             {
