@@ -12,9 +12,20 @@ namespace Microsoft.Xna.Framework.Content
     {
         public string RootDirectory { get; set; }
         public GraphicsDevice _graphicsDevice { get; set; }
+        protected Dictionary<string, bool> ResourcesReady;
+
+        public ContentManager()
+        {
+            ResourcesReady = new Dictionary<string, bool>();
+        }
+
+        public ContentManager(IServiceProvider serviceProvider, string rootDirectory)
+        {
+        }
 
         public T Load<T>(string name) where T : GraphicsResource, new()
         {
+            ResourcesReady.Add(name, false);
             if (typeof(T) == typeof(Texture2D))
             {
                 var t = new Texture2D();
@@ -23,6 +34,7 @@ namespace Microsoft.Xna.Framework.Content
                 {
                     t.Image = img;
                     Console.WriteLine(img.Src + " loaded " + t.Image.Width + "x" + t.Image.Height);
+                    ResourcesReady[name] = true;
                 };
                 img.Src = RootDirectory + "/" + name + ".png";            
                 return t as T;
@@ -33,18 +45,17 @@ namespace Microsoft.Xna.Framework.Content
             }
         }
 
-        public ContentManager()
+        public bool AllResoucesLoaded
         {
-
-        }
-
-        public ContentManager(IServiceProvider serviceProvider, string rootDirectory)
-        {
+            get
+            {
+                return ResourcesReady.Where(t => !t.Value).Count() == 0;
+            }
         }
 
         public void Unload()
         {
-
+            ResourcesReady.Clear();
         }
     }
 }

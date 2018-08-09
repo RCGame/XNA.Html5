@@ -70,11 +70,6 @@ namespace Microsoft.Xna.Framework
 
         public void Run()
         {
-            Html5.Canvas = new HTMLCanvasElement();
-            Html5.Canvas.Width = Window.OuterWidth;
-            Html5.Canvas.Height = Window.OuterHeight;
-            Document.Body.AppendChild(Html5.Canvas);
-            Html5.Canvas.GetContext("2d").As<CanvasRenderingContext2D>();
             gameTime = new GameTime();
             gameTime.TotalGameTime = new TimeSpan(0);
             gameTime.ElapsedGameTime = new TimeSpan(0);
@@ -90,8 +85,11 @@ namespace Microsoft.Xna.Framework
             gameTime.TotalGameTime += gameTime.ElapsedGameTime;
             timeNow = DateTime.Now;
             t1 = DateTime.Now;
-            Update(gameTime);
-            Draw(gameTime);
+            if (Content.AllResoucesLoaded)
+            {
+                Update(gameTime);
+                Draw(gameTime);
+            }
             t2 = DateTime.Now;
             leadingTime = Convert.ToInt32(_targetElapsedTime.TotalMilliseconds - (t2 - t1).TotalMilliseconds);
             //System.Console.WriteLine("elapsedTime: " + gameTime.ElapsedGameTime.TotalMilliseconds + " totalTime: " + gameTime.TotalGameTime.TotalSeconds + " leadingTime: " + leadingTime + " processingTime: " + (t2 - t1).TotalMilliseconds);

@@ -7,10 +7,10 @@ using Bridge.Html5;
 
 namespace Microsoft.Xna.Framework.Graphics
 {
-    public class Html5
+    internal class Html5
     {
-        public static HTMLCanvasElement Canvas;
-        public static CanvasRenderingContext2D Context;
+        internal static HTMLCanvasElement Canvas;
+        internal static CanvasRenderingContext2D Context;
     }
 
     public class GraphicsDevice
@@ -19,10 +19,21 @@ namespace Microsoft.Xna.Framework.Graphics
 
         public GraphicsDevice()
         {
-
+            Html5.Canvas = new HTMLCanvasElement();
+            Html5.Canvas.Width = Window.OuterWidth;
+            Html5.Canvas.Height = Window.OuterHeight;
+            Document.Body.AppendChild(Html5.Canvas);
+            Html5.Context = Html5.Canvas.GetContext("2d").As<CanvasRenderingContext2D>();
+            Console.WriteLine("canvas ready");
         }
 
         public void Clear(Color color)
+        {
+            Html5.Context.FillStyle = "#" + color.PackedValue.ToString("X");
+            Html5.Context.FillRect(0, 0, Html5.Canvas.Width, Html5.Canvas.Height);
+        }
+
+        internal void Draw(DrawSpec spec)
         {
 
         }

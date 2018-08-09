@@ -6,11 +6,34 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Xna.Framework.Graphics
 {
+    internal class DrawSpec
+    {
+        internal Matrix? transform;
+        internal List<SpriteSpec> spriteSpecs;
+    }
+
+    internal class SpriteSpec
+    {
+        internal Texture2D texture;
+        internal Vector2 position;
+        internal Rectangle? rectangle;
+        internal Color color;
+        internal float rotation;
+        internal Vector2 origin;
+        internal float scale;
+        internal Vector2 vScale;
+    }
+
     public class SpriteBatch
     {
+        DrawSpec drawSpecs;
+        GraphicsDevice _graphicDevice;
+
         public SpriteBatch(GraphicsDevice graphicDevice)
         {
-
+            _graphicDevice = graphicDevice;
+            drawSpecs = new DrawSpec();
+            drawSpecs.spriteSpecs = new List<SpriteSpec>();
         }
 
         public void Draw(Texture2D texture,
@@ -23,6 +46,15 @@ namespace Microsoft.Xna.Framework.Graphics
                 SpriteEffects effects,
                 float layerDepth)
         {
+            drawSpecs.spriteSpecs.Add(new SpriteSpec
+            {
+                texture = texture,
+                position = position,
+                color = color,
+                rotation = rotation,
+                origin = origin,
+                scale = scale
+            });
         }
 
         public void Draw(Texture2D texture,
@@ -35,6 +67,16 @@ namespace Microsoft.Xna.Framework.Graphics
                 SpriteEffects effects,
                 float layerDepth)
         {
+            drawSpecs.spriteSpecs.Add(new SpriteSpec
+            {
+                texture = texture,
+                position = position,
+                rectangle = sourceRectangle,
+                color = color,
+                rotation = rotation,
+                origin = origin,
+                vScale = scale
+            });
         }
 
         public void Begin()
@@ -53,7 +95,8 @@ namespace Microsoft.Xna.Framework.Graphics
              Matrix? transformMatrix = null
             )
         {
-
+            drawSpecs.transform = transformMatrix;
+            drawSpecs.spriteSpecs.Clear();
         }
 
         public void DrawString(
@@ -65,7 +108,7 @@ namespace Microsoft.Xna.Framework.Graphics
 
         public void End()
         {
-
+            _graphicDevice.Draw(drawSpecs);
         }
     }
 }
