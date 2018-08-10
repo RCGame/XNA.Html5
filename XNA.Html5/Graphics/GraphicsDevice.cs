@@ -20,8 +20,8 @@ namespace Microsoft.Xna.Framework.Graphics
         public GraphicsDevice()
         {
             Html5.Canvas = new HTMLCanvasElement();
-            Html5.Canvas.Width = Window.InnerWidth;
-            Html5.Canvas.Height = Window.InnerHeight;
+            Html5.Canvas.Width = Window.InnerWidth - 50;
+            Html5.Canvas.Height = Window.InnerHeight - 50;
             Document.Body.AppendChild(Html5.Canvas);
             Html5.Context = Html5.Canvas.GetContext("2d").As<CanvasRenderingContext2D>();
             //Console.WriteLine("canvas ready");
@@ -41,19 +41,18 @@ namespace Microsoft.Xna.Framework.Graphics
 
             foreach (var sprite in spec.spriteSpecs)
             {
-                float dx = sprite.position.X - sprite.origin.X;
-                float dy = sprite.position.Y - sprite.origin.Y;
+                Html5.Context.Save();
+                Html5.Context.Translate(sprite.position.X, sprite.position.Y);
+                Html5.Context.Rotate(sprite.rotation);
+                float dx = -sprite.origin.X;
+                float dy = -sprite.origin.Y;
+                //Console.WriteLine(sprite.texture.Name + " dx: " + dx + " dy: " + dy);
                 float dw = sprite.texture.Width * (sprite.useVScale ? sprite.vScale.X: sprite.scale);
                 float dh = sprite.texture.Height * (sprite.useVScale ? sprite.vScale.Y : sprite.scale);
-                Html5.Context.Rotate(sprite.rotation);
                 Html5.Context.DrawImage(sprite.texture.Image,
                     dx, dy, dw, dh
                     );
                 Html5.Context.Restore();
-                if (sprite.texture.Name.IndexOf("Ball") > 0)
-                {
-                    //Console.WriteLine(dx + " " + dy + " " + dw + " " + dh);
-                }
             }
 
             if (spec.transform != null)

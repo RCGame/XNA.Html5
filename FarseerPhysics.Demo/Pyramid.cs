@@ -14,7 +14,7 @@ namespace FarseerPhysics.Samples
         private Sprite _box;
         private List<Body> _boxes;
         private SpriteBatch _batch;
-        private float width = 1.5f;
+        private float width = 2f;
         public Pyramid(World world, ScreenManager screenManager, Vector2 position, int count, float density)
         {
             _batch = screenManager.SpriteBatch;
@@ -57,7 +57,7 @@ namespace FarseerPhysics.Samples
         {
             for (int i = 0; i < _boxes.Count; ++i)
             {
-                _batch.Draw(_box.Texture, ConvertUnits.ToDisplayUnits(_boxes[i].Position), null, Color.White, _boxes[i].Rotation, _box.Origin, (float)ConvertUnits.ToDisplayUnits(1f) * width / (float)_box.Texture.Width, SpriteEffects.None, 0f);
+                _batch.Draw(_box.Texture, ConvertUnits.ToDisplayUnits(_boxes[i].Position), null, Color.White, _boxes[i].Rotation, new Vector2(_box.Texture.Width / 2f, _box.Texture.Height / 2f), (float)ConvertUnits.ToDisplayUnits(1f) * width / (float)_box.Texture.Width, SpriteEffects.None, 0f);
             }
         }
     }

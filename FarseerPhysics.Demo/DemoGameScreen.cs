@@ -30,15 +30,15 @@ namespace FarseerPhysics.Samples.Demos
         {
             base.LoadContent();
 
-            World.Gravity = new Vector2(0f, 20f);
+            World.Gravity = new Vector2(0f, 40f);
             background = ScreenManager.Content.Load<Texture2D>("Assets/Background");
-            _pyramid = new Pyramid(World, ScreenManager, new Vector2(40f, -12f), 5, 1f);
-            agent = new Agent(World, ScreenManager, new Vector2(10f, -12f));
-            Body body = BodyFactory.CreateRectangle(World, 100f, 20f, 1f);
+            _pyramid = new Pyramid(World, ScreenManager, new Vector2(36f, 0f), 7, 1f);
+            agent = new Agent(World, ScreenManager, new Vector2(3f, 2f));
+            Body body = BodyFactory.CreateRectangle(World, 300f, 20f, 1f);
             body.BodyType = BodyType.Static;
             body.Friction = 2f;
             //body.Position = new Vector2(0f, 26.3f);
-            body.Position = new Vector2(0f, 260.3f);
+            body.Position = new Vector2(0f, 42f);
         }
 
         public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen)
