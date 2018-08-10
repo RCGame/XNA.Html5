@@ -138,7 +138,7 @@ namespace FarseerPhysics.Utility
                     // screens that they are covered by it.
                     if (!screen.IsPopup)
                     {
-                        //coveredByOtherScreen = true;
+                        coveredByOtherScreen = true;
                     }
                 }
             }

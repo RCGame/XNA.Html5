@@ -18,7 +18,7 @@ namespace Microsoft.Xna.Framework
         public ContentManager Content { get; set; }
         public bool IsFixedTimeStep { get; set; }
         private GameTime gameTime;
-        private DateTime timeNow, t1, t2;
+        private DateTime timeNow, t1, t2, u1, u2;
         private int leadingTime;
         private int timeoutId = 0;
         private TimeSpan _targetElapsedTime;
@@ -35,7 +35,7 @@ namespace Microsoft.Xna.Framework
 
         public Game()
         {
-            _targetElapsedTime = TimeSpan.FromMilliseconds(1000f / 20f);
+            _targetElapsedTime = TimeSpan.FromMilliseconds(1000f / 50f);
             Content = new ContentManager();
             _components = new GameComponentCollection();
         }
@@ -70,6 +70,7 @@ namespace Microsoft.Xna.Framework
 
         public void Run()
         {
+            IsActive = true;
             gameTime = new GameTime();
             gameTime.TotalGameTime = new TimeSpan(0);
             gameTime.ElapsedGameTime = new TimeSpan(0);
@@ -87,12 +88,14 @@ namespace Microsoft.Xna.Framework
             t1 = DateTime.Now;
             if (Content.AllResoucesLoaded)
             {
+                u1 = DateTime.Now;
                 Update(gameTime);
+                u2 = DateTime.Now;
                 Draw(gameTime);
             }
             t2 = DateTime.Now;
             leadingTime = Convert.ToInt32(_targetElapsedTime.TotalMilliseconds - (t2 - t1).TotalMilliseconds);
-            //System.Console.WriteLine("elapsedTime: " + gameTime.ElapsedGameTime.TotalMilliseconds + " totalTime: " + gameTime.TotalGameTime.TotalSeconds + " leadingTime: " + leadingTime + " processingTime: " + (t2 - t1).TotalMilliseconds);
+            System.Console.WriteLine("elapsedTime: " + gameTime.ElapsedGameTime.TotalMilliseconds + " totalTime: " + gameTime.TotalGameTime.TotalSeconds + " leadingTime: " + leadingTime + " updateTime: " + (u2 - u1).TotalMilliseconds + " totalProcessingTime: " + (t2 - t1).TotalMilliseconds);
             if (leadingTime <= 0)
             {
                 leadingTime = 1;

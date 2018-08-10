@@ -41,7 +41,6 @@ namespace Microsoft.Xna.Framework.Graphics
 
             foreach (var sprite in spec.spriteSpecs)
             {
-
                 float dx = sprite.position.X - sprite.origin.X;
                 float dy = sprite.position.Y - sprite.origin.Y;
                 float dw = sprite.texture.Width * (sprite.useVScale ? sprite.vScale.X: sprite.scale);
@@ -53,7 +52,7 @@ namespace Microsoft.Xna.Framework.Graphics
                 Html5.Context.Restore();
                 if (sprite.texture.Name.IndexOf("Ball") > 0)
                 {
-                    Console.WriteLine(dx + " " + dy + " " + dw + " " + dh);
+                    //Console.WriteLine(dx + " " + dy + " " + dw + " " + dh);
                 }
             }
 
