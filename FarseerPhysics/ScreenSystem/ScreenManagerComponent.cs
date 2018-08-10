@@ -105,7 +105,6 @@ namespace FarseerPhysics.Utility
             // Make a copy of the master screen list, to avoid confusion if
             // the process of updating one screen adds or removes others.
             _screensToUpdate.Clear();
-
             foreach (GameScreen screen in _screens)
             {
                 _screensToUpdate.Add(screen);
@@ -139,7 +138,7 @@ namespace FarseerPhysics.Utility
                     // screens that they are covered by it.
                     if (!screen.IsPopup)
                     {
-                        coveredByOtherScreen = true;
+                        //coveredByOtherScreen = true;
                     }
                 }
             }

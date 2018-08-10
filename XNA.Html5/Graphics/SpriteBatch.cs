@@ -22,6 +22,7 @@ namespace Microsoft.Xna.Framework.Graphics
         internal Vector2 origin;
         internal float scale;
         internal Vector2 vScale;
+        internal bool useVScale;
     }
 
     public class SpriteBatch
@@ -53,7 +54,8 @@ namespace Microsoft.Xna.Framework.Graphics
                 color = color,
                 rotation = rotation,
                 origin = origin,
-                scale = scale
+                scale = scale,
+                useVScale = false
             });
         }
 
@@ -75,7 +77,8 @@ namespace Microsoft.Xna.Framework.Graphics
                 color = color,
                 rotation = rotation,
                 origin = origin,
-                vScale = scale
+                vScale = scale,
+                useVScale = true
             });
         }
 

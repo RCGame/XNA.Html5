@@ -35,7 +35,31 @@ namespace Microsoft.Xna.Framework.Graphics
 
         internal void Draw(DrawSpec spec)
         {
+            if (spec.transform != null)
+            {
+            }
 
+            foreach (var sprite in spec.spriteSpecs)
+            {
+
+                float dx = sprite.position.X - sprite.origin.X;
+                float dy = sprite.position.Y - sprite.origin.Y;
+                float dw = sprite.texture.Width * (sprite.useVScale ? sprite.vScale.X: sprite.scale);
+                float dh = sprite.texture.Height * (sprite.useVScale ? sprite.vScale.Y : sprite.scale);
+                Html5.Context.Rotate(sprite.rotation);
+                Html5.Context.DrawImage(sprite.texture.Image,
+                    dx, dy, dw, dh
+                    );
+                Html5.Context.Restore();
+                if (sprite.texture.Name.IndexOf("Ball") > 0)
+                {
+                    Console.WriteLine(dx + " " + dy + " " + dw + " " + dh);
+                }
+            }
+
+            if (spec.transform != null)
+            {
+            }
         }
     }
 }

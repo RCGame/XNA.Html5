@@ -170,7 +170,6 @@ namespace FarseerPhysics.Utility
                                    bool coveredByOtherScreen)
         {
             _otherScreenHasFocus = otherScreenHasFocus;
-
             if (IsExiting)
             {
                 // If the screen is going away to die, it should transition off.

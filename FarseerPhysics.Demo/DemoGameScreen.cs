@@ -37,8 +37,8 @@ namespace FarseerPhysics.Samples.Demos
             Body body = BodyFactory.CreateRectangle(World, 100f, 20f, 1f);
             body.BodyType = BodyType.Static;
             body.Friction = 2f;
-            body.Position = new Vector2(0f, 26.3f);
-
+            //body.Position = new Vector2(0f, 26.3f);
+            body.Position = new Vector2(0f, 260.3f);
         }
 
         public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen)

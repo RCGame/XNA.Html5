@@ -33,7 +33,8 @@ namespace Microsoft.Xna.Framework.Content
                 img.OnLoad = (e) =>
                 {
                     t.Image = img;
-                    Console.WriteLine(img.Src + " loaded " + t.Image.Width + "x" + t.Image.Height);
+                    t.Name = name;
+                    Console.WriteLine(img.Src + " loaded " + t.Width + "x" + t.Height);
                     ResourcesReady[name] = true;
                 };
                 img.Src = RootDirectory + "/" + name + ".png";            
