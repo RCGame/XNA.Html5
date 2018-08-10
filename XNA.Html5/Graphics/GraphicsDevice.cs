@@ -24,7 +24,7 @@ namespace Microsoft.Xna.Framework.Graphics
             Html5.Canvas.Height = Window.InnerHeight;
             Document.Body.AppendChild(Html5.Canvas);
             Html5.Context = Html5.Canvas.GetContext("2d").As<CanvasRenderingContext2D>();
-            Console.WriteLine("canvas ready");
+            //Console.WriteLine("canvas ready");
         }
 
         public void Clear(Color color)

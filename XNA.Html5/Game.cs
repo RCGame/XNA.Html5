@@ -35,7 +35,7 @@ namespace Microsoft.Xna.Framework
 
         public Game()
         {
-            _targetElapsedTime = TimeSpan.FromMilliseconds(1000f / 50f);
+            _targetElapsedTime = TimeSpan.FromMilliseconds(1000f / 100f);
             Content = new ContentManager();
             _components = new GameComponentCollection();
         }
@@ -95,7 +95,7 @@ namespace Microsoft.Xna.Framework
             }
             t2 = DateTime.Now;
             leadingTime = Convert.ToInt32(_targetElapsedTime.TotalMilliseconds - (t2 - t1).TotalMilliseconds);
-            System.Console.WriteLine("elapsedTime: " + gameTime.ElapsedGameTime.TotalMilliseconds + " totalTime: " + gameTime.TotalGameTime.TotalSeconds + " leadingTime: " + leadingTime + " updateTime: " + (u2 - u1).TotalMilliseconds + " totalProcessingTime: " + (t2 - t1).TotalMilliseconds);
+            //System.Console.WriteLine("elapsedTime: " + gameTime.ElapsedGameTime.TotalMilliseconds + " totalTime: " + gameTime.TotalGameTime.TotalSeconds + " leadingTime: " + leadingTime + " updateTime: " + (u2 - u1).TotalMilliseconds + " totalProcessingTime: " + (t2 - t1).TotalMilliseconds);
             if (leadingTime <= 0)
             {
                 leadingTime = 1;

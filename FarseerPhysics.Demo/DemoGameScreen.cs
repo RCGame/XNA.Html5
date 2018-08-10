@@ -32,8 +32,8 @@ namespace FarseerPhysics.Samples.Demos
 
             World.Gravity = new Vector2(0f, 20f);
             background = ScreenManager.Content.Load<Texture2D>("Assets/Background");
-            _pyramid = new Pyramid(World, ScreenManager, new Vector2(15f, 12f), PyramidBaseBodyCount, 1f);
-            agent = new Agent(World, ScreenManager, new Vector2(-15f, 0f));
+            _pyramid = new Pyramid(World, ScreenManager, new Vector2(40f, -12f), 5, 1f);
+            agent = new Agent(World, ScreenManager, new Vector2(10f, -12f));
             Body body = BodyFactory.CreateRectangle(World, 100f, 20f, 1f);
             body.BodyType = BodyType.Static;
             body.Friction = 2f;
