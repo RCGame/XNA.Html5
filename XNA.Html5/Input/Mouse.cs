@@ -16,10 +16,6 @@ namespace Microsoft.Xna.Framework.Input
             {
                 mouse = Html5.MouseState;
             }
-            else
-            {
-                mouse.LeftButton = ButtonState.None;
-            }
             return mouse;
         } 
     }
