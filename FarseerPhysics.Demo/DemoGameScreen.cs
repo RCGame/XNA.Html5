@@ -34,10 +34,10 @@ namespace FarseerPhysics.Samples.Demos
             float frameHeight = 30f;
             float frameThick = 1f;
             Vector2 frameStartPos = new Vector2(2f, 2f);
-            World.Gravity = new Vector2(0f, 40f);
+            World.Gravity = new Vector2(0f, 80f);
             background = ScreenManager.Content.Load<Texture2D>("Assets/Background");
-            _pyramid = new Pyramid(World, ScreenManager, new Vector2(36f, 30f), 5, 1f);
-            agent = new Agent(World, ScreenManager, new Vector2(5f, 18f));
+            _pyramid = new Pyramid(World, ScreenManager, new Vector2(35f, 33f), 5, 1f);
+            agent = new Agent(World, ScreenManager, new Vector2(5f, 28f));
             b1 = new Border(World, ScreenManager, new Vector2(frameStartPos.X, frameStartPos.Y + frameHeight / 2f), frameThick, frameHeight, _pyramid.tex);
             b2 = new Border(World, ScreenManager, new Vector2(frameStartPos.X + frameWidth, frameStartPos.Y + frameHeight / 2f), frameThick, frameHeight, _pyramid.tex);
             b3 = new Border(World, ScreenManager, new Vector2(frameStartPos.X + frameWidth / 2f, frameStartPos.Y), frameWidth, frameThick, _pyramid.tex);
@@ -47,22 +47,22 @@ namespace FarseerPhysics.Samples.Demos
         public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen)
         {
             base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
-            var state = TouchPanel.GetState();
-            foreach (var touch in state)
-            {
-                switch (touch.State)
-                {
-                    case TouchLocationState.Pressed:
-                        touchOn = touch.Position;
-                        break;
-                    case TouchLocationState.Released:
-                        touchOff = touch.Position;
-                        var force = touchOff - touchOn;
-                        agent.Body.ApplyForce(Vector2.Multiply(force, 50f));
-                        break;
-                }
-            }
-#if WINDOWS 
+            //var state = TouchPanel.GetState();
+            //foreach (var touch in state)
+            //{
+            //    switch (touch.State)
+            //    {
+            //        case TouchLocationState.Pressed:
+            //            touchOn = touch.Position;
+            //            break;
+            //        case TouchLocationState.Released:
+            //            touchOff = touch.Position;
+            //            var force = touchOff - touchOn;
+            //            agent.Body.ApplyForce(Vector2.Multiply(force, 50f));
+            //            break;
+            //    }
+            //}
+
             var mouse = Mouse.GetState();
             switch (mouse.LeftButton)
             {
@@ -78,12 +78,11 @@ namespace FarseerPhysics.Samples.Demos
                     {
                         touchOff = new Vector2(mouse.Position.X, mouse.Position.Y);
                         var force = touchOff - touchOn;
-                        agent.Body.ApplyForce(Vector2.Multiply(force, 50f));
+                        agent.Body.ApplyForce(Vector2.Multiply(force, 150f));
                         didPress = false;
                     }
                     break;
             }
-#endif
         }
 
         public override void Draw(GameTime gameTime)

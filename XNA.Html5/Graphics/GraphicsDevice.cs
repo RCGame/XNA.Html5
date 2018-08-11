@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Xna.Framework.Input;
 using Bridge.Html5;
 
 namespace Microsoft.Xna.Framework.Graphics
@@ -11,6 +12,7 @@ namespace Microsoft.Xna.Framework.Graphics
     {
         internal static HTMLCanvasElement Canvas;
         internal static CanvasRenderingContext2D Context;
+        internal static MouseState MouseState;
     }
 
     public class GraphicsDevice
@@ -20,6 +22,18 @@ namespace Microsoft.Xna.Framework.Graphics
         public GraphicsDevice()
         {
             Document.Body.SetAttribute("style", "margin:0px;overflow:hidden;");
+            Document.Body.OnMouseDown = (e) =>
+            {
+                Html5.MouseState = new MouseState();
+                Html5.MouseState.LeftButton = ButtonState.Pressed;
+                Html5.MouseState.Position = new Point(e.ClientX, e.ClientY);
+            };
+            Document.Body.OnMouseUp = (e) =>
+            {
+                Html5.MouseState = new MouseState();
+                Html5.MouseState.LeftButton = ButtonState.Released;
+                Html5.MouseState.Position = new Point(e.ClientX, e.ClientY);
+            };
             Html5.Canvas = new HTMLCanvasElement();
             Html5.Canvas.Width = Window.InnerWidth;
             Html5.Canvas.Height = Window.InnerHeight;
