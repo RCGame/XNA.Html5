@@ -19,12 +19,12 @@ namespace Microsoft.Xna.Framework.Graphics
 
         public GraphicsDevice()
         {
+            Document.Body.SetAttribute("style", "margin:0px;overflow:hidden;");
             Html5.Canvas = new HTMLCanvasElement();
-            Html5.Canvas.Width = Window.InnerWidth / 2;
-            Html5.Canvas.Height = Window.InnerHeight / 2;
+            Html5.Canvas.Width = Window.InnerWidth;
+            Html5.Canvas.Height = Window.InnerHeight;
             Document.Body.AppendChild(Html5.Canvas);
             Html5.Context = Html5.Canvas.GetContext("2d").As<CanvasRenderingContext2D>();
-            //Console.WriteLine("canvas ready");
         }
 
         public void Clear(Color color)

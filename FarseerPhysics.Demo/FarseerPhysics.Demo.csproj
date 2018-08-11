@@ -72,6 +72,7 @@
   <ItemGroup>
     <Compile Include="Agent.cs" />
     <Compile Include="App.cs" />
+    <Compile Include="Border.cs" />
     <Compile Include="DemoGameScreen.cs" />
     <Compile Include="PhysicsGame.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

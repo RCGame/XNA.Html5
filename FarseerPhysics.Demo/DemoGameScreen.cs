@@ -19,6 +19,7 @@ namespace FarseerPhysics.Samples.Demos
 
         private Pyramid _pyramid;
         private Agent agent;
+        private Border b1, b2, b3, b4;
         private Vector2 touchOn, touchOff;
         private bool didPress = false;
 
@@ -29,16 +30,18 @@ namespace FarseerPhysics.Samples.Demos
         public override void LoadContent()
         {
             base.LoadContent();
-
+            float frameWidth = 50f;
+            float frameHeight = 30f;
+            float frameThick = 1f;
+            Vector2 frameStartPos = new Vector2(2f, 2f);
             World.Gravity = new Vector2(0f, 40f);
             background = ScreenManager.Content.Load<Texture2D>("Assets/Background");
-            _pyramid = new Pyramid(World, ScreenManager, new Vector2(36f, -10f), 4, 1f);
-            agent = new Agent(World, ScreenManager, new Vector2(3f, 15f));
-            Body body = BodyFactory.CreateRectangle(World, 300f, 20f, 1f);
-            body.BodyType = BodyType.Static;
-            body.Friction = 2f;
-            //body.Position = new Vector2(0f, 26.3f);
-            body.Position = new Vector2(0f, 42f);
+            _pyramid = new Pyramid(World, ScreenManager, new Vector2(36f, 30f), 5, 1f);
+            agent = new Agent(World, ScreenManager, new Vector2(5f, 18f));
+            b1 = new Border(World, ScreenManager, new Vector2(frameStartPos.X, frameStartPos.Y + frameHeight / 2f), frameThick, frameHeight, _pyramid.tex);
+            b2 = new Border(World, ScreenManager, new Vector2(frameStartPos.X + frameWidth, frameStartPos.Y + frameHeight / 2f), frameThick, frameHeight, _pyramid.tex);
+            b3 = new Border(World, ScreenManager, new Vector2(frameStartPos.X + frameWidth / 2f, frameStartPos.Y), frameWidth, frameThick, _pyramid.tex);
+            b4 = new Border(World, ScreenManager, new Vector2(frameStartPos.X + frameWidth / 2f, frameStartPos.Y + frameHeight), frameWidth, frameThick, _pyramid.tex);
         }
 
         public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen)
@@ -91,6 +94,10 @@ namespace FarseerPhysics.Samples.Demos
             ScreenManager.SpriteBatch.Begin(0, null, null, null, null, null, Camera.View);
             _pyramid.Draw();
             agent.Draw();
+            b1.Draw();
+            b2.Draw();
+            b3.Draw();
+            b4.Draw();
             ScreenManager.SpriteBatch.End();
             base.Draw(gameTime);
         }

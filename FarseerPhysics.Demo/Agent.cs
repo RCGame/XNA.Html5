@@ -21,9 +21,8 @@ namespace FarseerPhysics.Samples
             _agentBody = BodyFactory.CreateCircle(world, radius, 1f);
             _agentBody.Mass = 20f;
             _agentBody.BodyType = BodyType.Dynamic;
-            _agentBody.Restitution = 0.5f;
+            _agentBody.Restitution = 1f;
             _agentBody.Position = position;
-            _agentBody.LinearVelocity = new Vector2(6f, 0f);
             var tex = screenManager.Content.Load<Texture2D>("Assets/Ball");
             //GFX
             sprite = new Sprite(tex);

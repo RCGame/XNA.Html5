@@ -14,7 +14,8 @@ namespace FarseerPhysics.Samples
         private Sprite _box;
         private List<Body> _boxes;
         private SpriteBatch _batch;
-        private float width = 4f;
+        private float width = 3f;
+        public Texture2D tex;
 
         public Pyramid(World world, ScreenManager screenManager, Vector2 position, int count, float density)
         {
@@ -49,7 +50,7 @@ namespace FarseerPhysics.Samples
                 rowStart += deltaRow;
             }
 
-            var tex = screenManager.Content.Load<Texture2D>("Assets/Box");
+            tex = screenManager.Content.Load<Texture2D>("Assets/Box");
             //GFX
             _box = new Sprite(tex);
         }
