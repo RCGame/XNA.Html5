@@ -32,7 +32,7 @@ namespace FarseerPhysics.Samples.Demos
 
             World.Gravity = new Vector2(0f, 40f);
             background = ScreenManager.Content.Load<Texture2D>("Assets/Background");
-            _pyramid = new Pyramid(World, ScreenManager, new Vector2(36f, 0f), 7, 1f);
+            _pyramid = new Pyramid(World, ScreenManager, new Vector2(36f, -10f), 8, 1f);
             agent = new Agent(World, ScreenManager, new Vector2(3f, 2f));
             Body body = BodyFactory.CreateRectangle(World, 300f, 20f, 1f);
             body.BodyType = BodyType.Static;

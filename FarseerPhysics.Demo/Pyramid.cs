@@ -14,7 +14,8 @@ namespace FarseerPhysics.Samples
         private Sprite _box;
         private List<Body> _boxes;
         private SpriteBatch _batch;
-        private float width = 2f;
+        private float width = 4f;
+
         public Pyramid(World world, ScreenManager screenManager, Vector2 position, int count, float density)
         {
             _batch = screenManager.SpriteBatch;
@@ -26,7 +27,7 @@ namespace FarseerPhysics.Samples
             rowStart.Y -= 0.5f + count * width * 1.1f;
 
             Vector2 deltaRow = new Vector2(-(width + 0.2f) / 2f, width + 0.1f);
-            float spacing = width + 0.2f;
+            float spacing = width + 0.5f;
 
             _boxes = new List<Body>();
 
