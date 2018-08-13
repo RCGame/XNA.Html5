@@ -14,7 +14,7 @@ namespace Microsoft.Xna.Framework.Graphics
         internal static HTMLCanvasElement Canvas;
         internal static CanvasRenderingContext2D Context;
         internal static MouseState MouseState;
-        internal static TouchCollection Touches = new TouchCollection();
+        internal static List<TouchLocation> Touches = new List<TouchLocation>();
     }
 
     public class GraphicsDevice
@@ -49,14 +49,19 @@ namespace Microsoft.Xna.Framework.Graphics
                 foreach (var touch in e.Touches)
                 {
                     TouchLocation loc = new TouchLocation(0, TouchLocationState.Pressed, new Vector2(touch.ClientX, touch.ClientY));
+                    Html5.Touches.Add(loc);
                 }
             };
             Html5.Canvas.OnTouchMove = (e) =>
             {
-                Html5.Touches.Clear();
-                foreach (var touch in e.Touches)
+                if (TouchPanel.didPress)
                 {
-                    TouchLocation loc = new TouchLocation(0, TouchLocationState.Moved, new Vector2(touch.ClientX, touch.ClientY));
+                    Html5.Touches.Clear();
+                    foreach (var touch in e.Touches)
+                    {
+                        TouchLocation loc = new TouchLocation(0, TouchLocationState.Moved, new Vector2(touch.ClientX, touch.ClientY));
+                        Html5.Touches.Add(loc);
+                    }
                 }
             };
             Html5.Canvas.OnTouchEnd = (e) =>
@@ -66,6 +71,7 @@ namespace Microsoft.Xna.Framework.Graphics
                 foreach (var touch in e.Touches)
                 {
                     TouchLocation loc = new TouchLocation(0, TouchLocationState.Released, new Vector2(touch.ClientX, touch.ClientY));
+                    Html5.Touches.Add(loc);
                 }
             };
             Window.OnResize = (e) =>

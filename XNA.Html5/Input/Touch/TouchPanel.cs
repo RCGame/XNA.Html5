@@ -10,10 +10,33 @@ namespace Microsoft.Xna.Framework.Input.Touch
     public class TouchPanel
     {
         public static GestureType EnabledGestures { get; set; }
+        internal static bool didPress;
 
         public static TouchCollection GetState()
         {
-            return Html5.Touches;
+            if (Html5.Touches.Count > 0)
+            {
+                switch (Html5.Touches[0].State)
+                {
+                    case TouchLocationState.Pressed:
+                        didPress = true;
+                        return new TouchCollection(Html5.Touches.ToArray());
+                    case TouchLocationState.Moved:
+                        if (didPress)
+                        {
+                            return new TouchCollection(Html5.Touches.ToArray());
+                        }
+                        break;
+                    case TouchLocationState.Released:
+                        if (didPress)
+                        {
+                            didPress = false;
+                            return new TouchCollection(Html5.Touches.ToArray());
+                        }
+                        break;
+                }
+            }
+            return new TouchCollection();
         }
     }
 }
