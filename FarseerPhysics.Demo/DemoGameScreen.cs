@@ -22,7 +22,6 @@ namespace FarseerPhysics.Samples.Demos
         private Border b1, b2, b3, b4;
         private Vector2 touchOn, touchOff;
         private bool didPress = false;
-        private float worldRatio;
 
         public DemoGameScreen(ScreenManager screenManager) : base(screenManager)
         {
