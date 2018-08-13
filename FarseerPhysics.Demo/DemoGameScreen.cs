@@ -30,6 +30,7 @@ namespace FarseerPhysics.Samples.Demos
         public override void LoadContent()
         {
             base.LoadContent();
+            float worldRatio = (float)ScreenManager.GraphicsDevice.Viewport.Height / 35f;
             float frameWidth = 50f;
             float frameHeight = 30f;
             float frameThick = 1f;
@@ -47,21 +48,23 @@ namespace FarseerPhysics.Samples.Demos
         public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen)
         {
             base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
-            //var state = TouchPanel.GetState();
-            //foreach (var touch in state)
-            //{
-            //    switch (touch.State)
-            //    {
-            //        case TouchLocationState.Pressed:
-            //            touchOn = touch.Position;
-            //            break;
-            //        case TouchLocationState.Released:
-            //            touchOff = touch.Position;
-            //            var force = touchOff - touchOn;
-            //            agent.Body.ApplyForce(Vector2.Multiply(force, 50f));
-            //            break;
-            //    }
-            //}
+            var state = TouchPanel.GetState();
+            foreach (var touch in state)
+            {
+                switch (touch.State)
+                {
+                    case TouchLocationState.Pressed:
+                        //System.Console.WriteLine("start: " + touch.Position.X + "," + touch.Position.Y);
+                        touchOn = touch.Position;
+                        break;
+                    case TouchLocationState.Released:
+                        //System.Console.WriteLine("end: " + touch.Position.X + "," + touch.Position.Y);
+                        touchOff = touch.Position;
+                        var force = touchOff - touchOn;
+                        agent.Body.ApplyForce(Vector2.Multiply(force, 200f));
+                        break;
+                }
+            }
 
             var mouse = Mouse.GetState();
             switch (mouse.LeftButton)
@@ -87,8 +90,9 @@ namespace FarseerPhysics.Samples.Demos
 
         public override void Draw(GameTime gameTime)
         {
+            ConvertUnits.SetDisplayUnitToSimUnitRatio((float)ScreenManager.GraphicsDevice.Viewport.Height / 35f);
             ScreenManager.SpriteBatch.Begin(0, null, null, null, null, null, null);
-            ScreenManager.SpriteBatch.Draw(background, new Vector2(0f, 0f), null, Color.White, 0f, new Vector2(0f, 0f), 1f, SpriteEffects.None, 0f);
+            ScreenManager.SpriteBatch.Draw(background, new Vector2(ScreenManager.GraphicsDevice.Viewport.Width / 2f, ScreenManager.GraphicsDevice.Viewport.Height / 2f), null, Color.White, 0f, new Vector2(background.Width / 2f, background.Height / 2f), (float)ScreenManager.GraphicsDevice.Viewport.Height / (float)background.Height, SpriteEffects.None, 0f);
             ScreenManager.SpriteBatch.End();
             ScreenManager.SpriteBatch.Begin(0, null, null, null, null, null, Camera.View);
             _pyramid.Draw();

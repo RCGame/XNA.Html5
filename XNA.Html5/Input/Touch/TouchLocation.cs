@@ -131,6 +131,10 @@ namespace Microsoft.Xna.Framework.Input.Touch
             {
                 return _state;
             }
+            internal set
+            {
+                _state = value;
+            }
         }
 
         #endregion
