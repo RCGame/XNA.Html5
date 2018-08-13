@@ -55,12 +55,14 @@ namespace FarseerPhysics.Samples.Demos
                 switch (touch.State)
                 {
                     case TouchLocationState.Pressed:
+                        //System.Console.WriteLine("start: " + touch.Position.X + "," + touch.Position.Y);
                         touchOn = touch.Position;
                         break;
                     case TouchLocationState.Released:
+                        //System.Console.WriteLine("end: " + touch.Position.X + "," + touch.Position.Y);
                         touchOff = touch.Position;
                         var force = touchOff - touchOn;
-                        agent.Body.ApplyForce(Vector2.Multiply(force, 150f));
+                        agent.Body.ApplyForce(Vector2.Multiply(force, 200f));
                         break;
                 }
             }

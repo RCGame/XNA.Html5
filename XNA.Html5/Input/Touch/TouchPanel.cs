@@ -19,8 +19,12 @@ namespace Microsoft.Xna.Framework.Input.Touch
                 switch (Html5.Touches[0].State)
                 {
                     case TouchLocationState.Pressed:
-                        didPress = true;
-                        return new TouchCollection(Html5.Touches.ToArray());
+                        if (!didPress)
+                        {
+                            didPress = true;
+                            return new TouchCollection(Html5.Touches.ToArray());
+                        }
+                        break;
                     case TouchLocationState.Moved:
                         if (didPress)
                         {

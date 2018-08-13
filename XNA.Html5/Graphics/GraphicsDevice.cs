@@ -42,9 +42,13 @@ namespace Microsoft.Xna.Framework.Graphics
                 Html5.MouseState.LeftButton = ButtonState.Released;
                 Html5.MouseState.Position = new Point(e.ClientX, e.ClientY);
             };
+            Document.Body.OnTouchStart = (e) =>
+            {
+                e.PreventDefault();
+            };
             Html5.Canvas.OnTouchStart = (e) =>
             {
-                //Console.WriteLine("start: " + e.Touches[0].ClientX, e.Touches[0].ClientY);
+                e.PreventDefault();
                 Html5.Touches.Clear();
                 foreach (var touch in e.Touches)
                 {
@@ -54,6 +58,7 @@ namespace Microsoft.Xna.Framework.Graphics
             };
             Html5.Canvas.OnTouchMove = (e) =>
             {
+                e.PreventDefault();
                 if (TouchPanel.didPress)
                 {
                     Html5.Touches.Clear();
@@ -66,13 +71,27 @@ namespace Microsoft.Xna.Framework.Graphics
             };
             Html5.Canvas.OnTouchEnd = (e) =>
             {
-                //Console.WriteLine("end: " + e.Touches[0].ClientX, e.Touches[0].ClientY);
-                Html5.Touches.Clear();
-                foreach (var touch in e.Touches)
+                e.PreventDefault();
+                List<TouchLocation> locs = new List<TouchLocation>();
+                foreach (var touch in Html5.Touches)
                 {
-                    TouchLocation loc = new TouchLocation(0, TouchLocationState.Released, new Vector2(touch.ClientX, touch.ClientY));
-                    Html5.Touches.Add(loc);
+                    TouchLocation loc = new TouchLocation(0, TouchLocationState.Released, new Vector2(touch.Position.X, touch.Position.Y));
+                    locs.Add(loc);
                 }
+                Html5.Touches.Clear();
+                Html5.Touches = locs;
+            };
+            Html5.Canvas.OnTouchLeave = (e) =>
+            {
+                e.PreventDefault();
+                List<TouchLocation> locs = new List<TouchLocation>();
+                foreach (var touch in Html5.Touches)
+                {
+                    TouchLocation loc = new TouchLocation(0, TouchLocationState.Released, new Vector2(touch.Position.X, touch.Position.Y));
+                    locs.Add(loc);
+                }
+                Html5.Touches.Clear();
+                Html5.Touches = locs;
             };
             Window.OnResize = (e) =>
             {
