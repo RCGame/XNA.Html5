@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Input.Touch;
 using Bridge.Html5;
 
 namespace Microsoft.Xna.Framework.Graphics
@@ -13,32 +14,66 @@ namespace Microsoft.Xna.Framework.Graphics
         internal static HTMLCanvasElement Canvas;
         internal static CanvasRenderingContext2D Context;
         internal static MouseState MouseState;
+        internal static TouchCollection Touches = new TouchCollection();
     }
 
     public class GraphicsDevice
     {
-        public Viewport Viewport { get; }
+        public Viewport Viewport { get; private set; }
 
         public GraphicsDevice()
         {
+            Html5.Canvas = new HTMLCanvasElement();
+            Html5.Canvas.Width = Window.InnerWidth;
+            Html5.Canvas.Height = Window.InnerHeight;
+            Document.Body.AppendChild(Html5.Canvas);
+            Viewport = new Viewport(0, 0, Html5.Canvas.Width, Html5.Canvas.Height);
+            Html5.Context = Html5.Canvas.GetContext("2d").As<CanvasRenderingContext2D>();
             Document.Body.SetAttribute("style", "margin:0px;overflow:hidden;");
-            Document.Body.OnMouseDown = (e) =>
+            Html5.Canvas.OnMouseDown = (e) =>
             {
                 Html5.MouseState = new MouseState();
                 Html5.MouseState.LeftButton = ButtonState.Pressed;
                 Html5.MouseState.Position = new Point(e.ClientX, e.ClientY);
             };
-            Document.Body.OnMouseUp = (e) =>
+            Html5.Canvas.OnMouseUp = (e) =>
             {
                 Html5.MouseState = new MouseState();
                 Html5.MouseState.LeftButton = ButtonState.Released;
                 Html5.MouseState.Position = new Point(e.ClientX, e.ClientY);
             };
-            Html5.Canvas = new HTMLCanvasElement();
-            Html5.Canvas.Width = Window.InnerWidth;
-            Html5.Canvas.Height = Window.InnerHeight;
-            Document.Body.AppendChild(Html5.Canvas);
-            Html5.Context = Html5.Canvas.GetContext("2d").As<CanvasRenderingContext2D>();
+            Html5.Canvas.OnTouchStart = (e) =>
+            {
+                //Console.WriteLine("start: " + e.Touches[0].ClientX, e.Touches[0].ClientY);
+                Html5.Touches.Clear();
+                foreach (var touch in e.Touches)
+                {
+                    TouchLocation loc = new TouchLocation(0, TouchLocationState.Pressed, new Vector2(touch.ClientX, touch.ClientY));
+                }
+            };
+            Html5.Canvas.OnTouchMove = (e) =>
+            {
+                Html5.Touches.Clear();
+                foreach (var touch in e.Touches)
+                {
+                    TouchLocation loc = new TouchLocation(0, TouchLocationState.Moved, new Vector2(touch.ClientX, touch.ClientY));
+                }
+            };
+            Html5.Canvas.OnTouchEnd = (e) =>
+            {
+                //Console.WriteLine("end: " + e.Touches[0].ClientX, e.Touches[0].ClientY);
+                Html5.Touches.Clear();
+                foreach (var touch in e.Touches)
+                {
+                    TouchLocation loc = new TouchLocation(0, TouchLocationState.Released, new Vector2(touch.ClientX, touch.ClientY));
+                }
+            };
+            Window.OnResize = (e) =>
+            {
+                Html5.Canvas.Width = Window.InnerWidth;
+                Html5.Canvas.Height = Window.InnerHeight;
+                Viewport = new Viewport(0, 0, Html5.Canvas.Width, Html5.Canvas.Height);
+            };
         }
 
         public void Clear(Color color)
@@ -60,7 +95,6 @@ namespace Microsoft.Xna.Framework.Graphics
                 Html5.Context.Rotate(sprite.rotation);
                 float dx = -sprite.origin.X * (sprite.useVScale ? sprite.vScale.X : sprite.scale);
                 float dy = -sprite.origin.Y * (sprite.useVScale ? sprite.vScale.Y : sprite.scale);
-                //Console.WriteLine(sprite.texture.Name + " dx: " + dx + " dy: " + dy);
                 float dw = sprite.texture.Width * (sprite.useVScale ? sprite.vScale.X: sprite.scale);
                 float dh = sprite.texture.Height * (sprite.useVScale ? sprite.vScale.Y : sprite.scale);
                 Html5.Context.DrawImage(sprite.texture.Image,

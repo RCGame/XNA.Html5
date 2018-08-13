@@ -17,7 +17,7 @@ namespace FarseerPhysics.Samples
             _graphics = new GraphicsDeviceManager(this);
             //_graphics.PreferredBackBufferWidth = 1900;
             //_graphics.PreferredBackBufferHeight = 1000;
-            ConvertUnits.SetDisplayUnitToSimUnitRatio(25f);
+            ConvertUnits.SetDisplayUnitToSimUnitRatio((float)GraphicsDevice.Viewport.Height / 35f);
             IsFixedTimeStep = true;
             _graphics.IsFullScreen = false;
 
