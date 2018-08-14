@@ -34,7 +34,7 @@ namespace FarseerPhysics.Samples.Demos
             float frameWidth = 50f;
             float frameHeight = 30f;
             float frameThick = 1f;
-            Vector2 frameStartPos = new Vector2(2f, 2f);
+            Vector2 frameStartPos = new Vector2(1f, 2f);
             World.Gravity = new Vector2(0f, 80f);
             background = ScreenManager.Content.Load<Texture2D>("Assets/Background");
             _pyramid = new Pyramid(World, ScreenManager, new Vector2(35f, 33f), 5, 1f);
@@ -54,14 +54,12 @@ namespace FarseerPhysics.Samples.Demos
                 switch (touch.State)
                 {
                     case TouchLocationState.Pressed:
-                        //System.Console.WriteLine("start: " + touch.Position.X + "," + touch.Position.Y);
                         touchOn = touch.Position;
                         break;
                     case TouchLocationState.Released:
-                        //System.Console.WriteLine("end: " + touch.Position.X + "," + touch.Position.Y);
                         touchOff = touch.Position;
                         var force = touchOff - touchOn;
-                        agent.Body.ApplyForce(Vector2.Multiply(force, 200f));
+                        agent.Body.ApplyForce(Vector2.Multiply(force, 300f));
                         break;
                 }
             }
