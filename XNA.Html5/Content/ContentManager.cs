@@ -4,10 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Audio;
 using Bridge.Html5;
 
 namespace Microsoft.Xna.Framework.Content
 {
+    public class Loadable
+    {
+        public virtual string Name { get; set; }
+    }
+
     public class ContentManager
     {
         public string RootDirectory { get; set; }
@@ -23,7 +29,7 @@ namespace Microsoft.Xna.Framework.Content
         {
         }
 
-        public T Load<T>(string name) where T : GraphicsResource, new()
+        public T Load<T>(string name) where T : Loadable, new()
         {
             ResourcesReady.Add(name, false);
             if (typeof(T) == typeof(Texture2D))
@@ -34,10 +40,22 @@ namespace Microsoft.Xna.Framework.Content
                 {
                     t.Image = img;
                     t.Name = name;
-                    //Console.WriteLine(img.Src + " loaded " + t.Width + "x" + t.Height);
                     ResourcesReady[name] = true;
                 };
                 img.Src = RootDirectory + "/" + name + ".png";            
+                return t as T;
+            }
+            else if (typeof(T) == typeof(SoundEffect))
+            {
+                var t = new SoundEffect();
+                var sound = new HTMLAudioElement();
+                sound.OnCanPlayThrough = (e) =>
+                {
+                    t.Sound = sound;
+                    t.Name = name;
+                    ResourcesReady[name] = true;
+                };
+                sound.Src = RootDirectory + "/" + name + ".mp3";
                 return t as T;
             }
             else

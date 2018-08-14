@@ -14,33 +14,11 @@ namespace FarseerPhysics.Demo
         {
             HTMLButtonElement button = new HTMLButtonElement();
             button.InnerHTML = "Fullscreen Experience (use landscape)";
-            button.SetAttribute("style", 
-                @"position: fixed;
-    top: 50%;
-    left: 50%;
-    width: 80%;
-    transform: translate(-50%, -50%);
-    font-size: 30px;");
+            button.SetAttribute("style", CustomScripts.FullScreenButtonStyle);
 
             button.OnClick = (e) =>
             {
-                Script.Write(
-                    @"if (document.body.requestFullscreen) {
-        document.body.requestFullscreen();
-            }
-    else if (document.body.mozRequestFullScreen)
-            {
-                document.body.mozRequestFullScreen();
-            }
-            else if (document.body.webkitRequestFullscreen)
-            {
-                document.body.webkitRequestFullscreen();
-            }
-            else if (document.body.msRequestFullscreen)
-            {
-                document.body.msRequestFullscreen();
-            }
-            ");
+                CustomScripts.RequestFullScreen();
                 Document.Body.RemoveChild(button);
                 PhysicsGame game = new PhysicsGame();
                 game.Run();

@@ -40,10 +40,11 @@
 
 using System;
 using System.Diagnostics;
+using Microsoft.Xna.Framework.Content;
 
 namespace Microsoft.Xna.Framework.Graphics
 {
-    public abstract class GraphicsResource : IDisposable
+    public abstract class GraphicsResource : Loadable, IDisposable
     {
         bool disposed;
 
@@ -106,8 +107,6 @@ namespace Microsoft.Xna.Framework.Graphics
                 return disposed;
             }
         }
-
-        public string Name { get; set; }
 
         public Object Tag { get; set; }
         
