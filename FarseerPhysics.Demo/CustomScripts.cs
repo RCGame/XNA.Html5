@@ -38,5 +38,10 @@ namespace FarseerPhysics.Demo
         {
             return Script.Write<bool>("window.orientation !== undefined");
         }
+
+        public static bool IsFullScreen()
+        {
+            return Script.Write<bool>("document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen");
+        }
     }
 }

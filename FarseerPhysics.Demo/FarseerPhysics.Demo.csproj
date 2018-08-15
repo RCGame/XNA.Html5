@@ -67,6 +67,7 @@
     <Content Include="Content\Assets\Background.png" />
     <Content Include="Content\Assets\Ball.png" />
     <Content Include="Content\Assets\Box.png" />
+    <Content Include="Content\Audio\Hit.mp3" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -89,6 +90,7 @@
       <Name>XNA.Html5</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

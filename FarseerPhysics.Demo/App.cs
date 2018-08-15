@@ -5,11 +5,14 @@ using Bridge;
 using Bridge.Html5;
 using Microsoft.Xna.Framework;
 using FarseerPhysics.Samples;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace FarseerPhysics.Demo
 {
     public class App
     {
+        private static PhysicsGame game;
+
         public static void Main()
         {
             if (CustomScripts.IsMobileDevice())
@@ -25,6 +28,30 @@ namespace FarseerPhysics.Demo
                     RunGame();
                 };
                 Document.Body.AppendChild(button);
+                Html5.OnResize = () =>
+                {
+                    if (game != null)
+                    {
+                        if (Window.InnerWidth < Window.InnerHeight)
+                        {
+                            if (game.IsActive)
+                            {
+                                game.IsActive = false;
+                                Document.Body.RemoveChild(Html5.Canvas);
+                                Document.Body.AppendChild(button);
+                            }
+                        }
+                        else
+                        {
+                            if (!game.IsActive)
+                            {
+                                Document.Body.RemoveChild(button);
+                                Document.Body.AppendChild(Html5.Canvas);
+                                game.IsActive = true;
+                            }
+                        }
+                    }
+                };
             }
             else
             {
@@ -34,7 +61,7 @@ namespace FarseerPhysics.Demo
 
         public static void RunGame()
         {
-            PhysicsGame game = new PhysicsGame();
+            game = new PhysicsGame();
             game.Run();
         }
     }

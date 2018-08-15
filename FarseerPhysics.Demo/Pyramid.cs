@@ -6,6 +6,7 @@ using FarseerPhysics.Factories;
 using FarseerPhysics.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Audio;
 
 namespace FarseerPhysics.Samples
 {
@@ -15,8 +16,9 @@ namespace FarseerPhysics.Samples
         private List<Body> _boxes;
         private SpriteBatch _batch;
         private float width = 3f;
+        private SoundEffect sound;
         public Texture2D tex;
-
+        
         public Pyramid(World world, ScreenManager screenManager, Vector2 position, int count, float density)
         {
             _batch = screenManager.SpriteBatch;
@@ -41,6 +43,7 @@ namespace FarseerPhysics.Samples
                     Body body = BodyFactory.CreateBody(world);
                     body.BodyType = BodyType.Dynamic;
                     body.Position = pos;
+                    body.OnCollision += Body_OnCollision;
                     body.CreateFixture(shape);
                     _boxes.Add(body);
 
@@ -50,9 +53,17 @@ namespace FarseerPhysics.Samples
                 rowStart += deltaRow;
             }
 
+            sound = screenManager.Content.Load<SoundEffect>("Audio/Hit");
             tex = screenManager.Content.Load<Texture2D>("Assets/Box");
             //GFX
             _box = new Sprite(tex);
+        }
+
+        private bool Body_OnCollision(Fixture fixtureA, Fixture fixtureB, Dynamics.Contacts.Contact contact)
+        {
+            //sound.Play();
+            System.Console.WriteLine("Collide");
+            return true;
         }
 
         public void Draw()

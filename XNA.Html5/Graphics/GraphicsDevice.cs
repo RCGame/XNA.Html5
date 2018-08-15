@@ -9,12 +9,15 @@ using Bridge.Html5;
 
 namespace Microsoft.Xna.Framework.Graphics
 {
-    internal class Html5
+    public delegate void OnResizeHandler();
+
+    public class Html5
     {
-        internal static HTMLCanvasElement Canvas;
+        public static HTMLCanvasElement Canvas;
         internal static CanvasRenderingContext2D Context;
         internal static MouseState MouseState;
         internal static List<TouchLocation> Touches = new List<TouchLocation>();
+        public static OnResizeHandler OnResize;
     }
 
     public class GraphicsDevice
@@ -98,8 +101,8 @@ namespace Microsoft.Xna.Framework.Graphics
                 Html5.Canvas.Width = Window.InnerWidth;
                 Html5.Canvas.Height = Window.InnerHeight;
                 Viewport = new Viewport(0, 0, Html5.Canvas.Width, Html5.Canvas.Height);
-            };           
-            
+                Html5.OnResize();
+            };            
         }
 
         public void Clear(Color color)
