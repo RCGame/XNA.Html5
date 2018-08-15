@@ -33,5 +33,10 @@ namespace FarseerPhysics.Demo
             }
             ");
         }
+
+        public static bool IsMobileDevice()
+        {
+            return Script.Write<bool>("window.orientation !== undefined");
+        }
     }
 }

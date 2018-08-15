@@ -12,18 +12,30 @@ namespace FarseerPhysics.Demo
     {
         public static void Main()
         {
-            HTMLButtonElement button = new HTMLButtonElement();
-            button.InnerHTML = "Fullscreen Experience (use landscape)";
-            button.SetAttribute("style", CustomScripts.FullScreenButtonStyle);
-
-            button.OnClick = (e) =>
+            if (CustomScripts.IsMobileDevice())
             {
-                CustomScripts.RequestFullScreen();
-                Document.Body.RemoveChild(button);
-                PhysicsGame game = new PhysicsGame();
-                game.Run();
-            };
-            Document.Body.AppendChild(button);
+                HTMLButtonElement button = new HTMLButtonElement();
+                button.InnerHTML = "Fullscreen Experience (use landscape)";
+                button.SetAttribute("style", CustomScripts.FullScreenButtonStyle);
+
+                button.OnClick = (e) =>
+                {
+                    CustomScripts.RequestFullScreen();
+                    Document.Body.RemoveChild(button);
+                    RunGame();
+                };
+                Document.Body.AppendChild(button);
+            }
+            else
+            {
+                RunGame();
+            }
+        }
+
+        public static void RunGame()
+        {
+            PhysicsGame game = new PhysicsGame();
+            game.Run();
         }
     }
 }
