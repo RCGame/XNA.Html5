@@ -61,7 +61,7 @@ namespace FarseerPhysics.Samples
 
         private bool Body_OnCollision(Fixture fixtureA, Fixture fixtureB, Dynamics.Contacts.Contact contact)
         {
-            //sound.Play();
+            sound.Play();
             System.Console.WriteLine("Collide");
             return true;
         }

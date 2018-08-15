@@ -49,6 +49,7 @@ namespace Microsoft.Xna.Framework.Content
             {
                 var t = new SoundEffect();
                 var sound = new HTMLAudioElement();
+                Document.Body.AppendChild(sound);
                 sound.OnCanPlayThrough = (e) =>
                 {
                     t.Sound = sound;
