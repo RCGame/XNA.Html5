@@ -49,14 +49,17 @@ namespace Microsoft.Xna.Framework.Content
             {
                 var t = new SoundEffect();
                 var sound = new HTMLAudioElement();
-                Document.Body.AppendChild(sound);
+                
+                sound.Preload = "none";
                 sound.OnCanPlayThrough = (e) =>
                 {
                     t.Sound = sound;
                     t.Name = name;
                     ResourcesReady[name] = true;
                 };
-                sound.Src = RootDirectory + "/" + name + ".mp3";
+                sound.Src = RootDirectory + "/" + name + ".wav";
+                Document.Body.AppendChild(sound);
+                sound.Load();
                 return t as T;
             }
             else

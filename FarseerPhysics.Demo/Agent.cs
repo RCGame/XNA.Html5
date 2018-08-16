@@ -4,6 +4,7 @@ using FarseerPhysics.Factories;
 using FarseerPhysics.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Audio;
 
 namespace FarseerPhysics.Samples
 {
@@ -12,6 +13,7 @@ namespace FarseerPhysics.Samples
         private Body _agentBody;
         private Sprite sprite;
         private SpriteBatch _batch;
+        private SoundEffect sound;
         private float radius = 2f;
 
         public Agent(World world, ScreenManager screenManager, Vector2 position)
@@ -23,9 +25,17 @@ namespace FarseerPhysics.Samples
             _agentBody.BodyType = BodyType.Dynamic;
             _agentBody.Restitution = 0.5f;
             _agentBody.Position = position;
+            _agentBody.OnCollision += _agentBody_OnCollision;
+            sound = screenManager.Content.Load<SoundEffect>("Audio/Collision");
             var tex = screenManager.Content.Load<Texture2D>("Assets/Ball");
             //GFX
             sprite = new Sprite(tex);
+        }
+
+        private bool _agentBody_OnCollision(Fixture fixtureA, Fixture fixtureB, Dynamics.Contacts.Contact contact)
+        {
+            sound.Play();
+            return true;
         }
 
         public Body Body
