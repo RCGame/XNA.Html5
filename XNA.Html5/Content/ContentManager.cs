@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Media;
+
 using Bridge.Html5;
 
 namespace Microsoft.Xna.Framework.Content
@@ -48,6 +50,15 @@ namespace Microsoft.Xna.Framework.Content
             else if (typeof(T) == typeof(SoundEffect))
             {
                 var t = new SoundEffect();
+                t.Load(RootDirectory + "/" + name + ".wav", () => {
+                    t.Name = name;
+                    ResourcesReady[name] = true;
+                });
+                return t as T;
+            }
+            else if (typeof(T) == typeof(Song))
+            {
+                var t = new Song();
                 var sound = new HTMLAudioElement();
                 
                 sound.Preload = "none";
@@ -57,7 +68,7 @@ namespace Microsoft.Xna.Framework.Content
                     t.Name = name;
                     ResourcesReady[name] = true;
                 };
-                sound.Src = RootDirectory + "/" + name + ".wav";
+                sound.Src = RootDirectory + "/" + name + ".mp3";
                 Document.Body.AppendChild(sound);
                 sound.Load();
                 return t as T;

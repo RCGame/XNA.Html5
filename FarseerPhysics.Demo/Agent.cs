@@ -15,6 +15,7 @@ namespace FarseerPhysics.Samples
         private SpriteBatch _batch;
         private SoundEffect sound;
         private float radius = 2f;
+        private Fixture a, b;
 
         public Agent(World world, ScreenManager screenManager, Vector2 position)
         {
@@ -26,15 +27,26 @@ namespace FarseerPhysics.Samples
             _agentBody.Restitution = 0.5f;
             _agentBody.Position = position;
             _agentBody.OnCollision += _agentBody_OnCollision;
+            _agentBody.OnSeparation += _agentBody_OnSeparation;
             sound = screenManager.Content.Load<SoundEffect>("Audio/Collision");
             var tex = screenManager.Content.Load<Texture2D>("Assets/Ball");
+
             //GFX
             sprite = new Sprite(tex);
         }
 
+        private void _agentBody_OnSeparation(Fixture fixtureA, Fixture fixtureB)
+        {
+        }
+
         private bool _agentBody_OnCollision(Fixture fixtureA, Fixture fixtureB, Dynamics.Contacts.Contact contact)
         {
-            sound.Play();
+            if (!(fixtureA == a && fixtureB == b || fixtureA == b && fixtureB == a))
+            {
+                sound.Play();
+            }
+            a = fixtureA;
+            b = fixtureB;
             return true;
         }
 

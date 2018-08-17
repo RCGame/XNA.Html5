@@ -61,8 +61,14 @@ namespace FarseerPhysics.Demo
 
         public static void RunGame()
         {
-            game = new PhysicsGame();
-            game.Run();
+            HTMLScriptElement script = new HTMLScriptElement();
+            script.Src = "audioContext.js";
+            Document.Head.AppendChild(script);
+            script.OnLoad = (e) =>
+            {
+                game = new PhysicsGame();
+                game.Run();
+            };
         }
     }
 }
