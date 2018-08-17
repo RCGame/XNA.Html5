@@ -54,7 +54,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="audioContext.js" />
     <Content Include="bridge.json" />
     <None Include="packages.config" />
     <None Include="Web.Debug.config">

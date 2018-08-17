@@ -25,6 +25,7 @@ namespace Microsoft.Xna.Framework.Content
         public ContentManager()
         {
             ResourcesReady = new Dictionary<string, bool>();
+            SoundEffect.Init();
         }
 
         public ContentManager(IServiceProvider serviceProvider, string rootDirectory)
