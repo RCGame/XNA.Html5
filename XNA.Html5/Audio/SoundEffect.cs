@@ -13,6 +13,7 @@ namespace Microsoft.Xna.Framework.Audio
     public class SoundEffect : Loadable
     {
         internal int Index;
+        internal bool Loaded = false;
 
         internal static void Init()
         {
@@ -68,6 +69,7 @@ function AudioContextManager() {
     this.context = null;
     this.bufferLoader = null;
     this.bufferList = null;
+    this.loop = false;
 }
 
 AudioContextManager.prototype.load = function (src, callback) {
@@ -96,6 +98,7 @@ AudioContextManager.prototype.play = function () {
     if (window.AudioContext) {
         var source = this.context.createBufferSource();
         source.buffer = this.bufferList[0];
+        source.loop = this.loop;
         source.connect(this.context.destination);
         source.start(0);
     }
@@ -122,21 +125,13 @@ function removeAllAudioContexts() {
 
         public void Play()
         {
-            Play(Index);
-        }
-
-        private void Play(int index)
-        {
+            int index = Index;
             Script.Write("audioContexts[index].play();");
         }
 
         internal void Load(string src, Action d)
         {
-            Load(Index, src, d);
-        }
-
-        private void Load(int index, string src, Action d)
-        {
+            int index = Index;
             Script.Write("audioContexts[index].load(src, d);");
         }
     }

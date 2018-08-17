@@ -7,6 +7,8 @@ using FarseerPhysics.Factories;
 using FarseerPhysics.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Input.Touch;
 using Microsoft.Xna.Framework.Input;
 
@@ -43,6 +45,9 @@ namespace FarseerPhysics.Samples.Demos
             b2 = new Border(World, ScreenManager, new Vector2(frameStartPos.X + frameWidth, frameStartPos.Y + frameHeight / 2f), frameThick, frameHeight, _pyramid.tex);
             b3 = new Border(World, ScreenManager, new Vector2(frameStartPos.X + frameWidth / 2f, frameStartPos.Y), frameWidth, frameThick, _pyramid.tex);
             b4 = new Border(World, ScreenManager, new Vector2(frameStartPos.X + frameWidth / 2f, frameStartPos.Y + frameHeight), frameWidth, frameThick, _pyramid.tex);
+            var song = ScreenManager.Content.Load<Song>("Audio/CelticHarp");
+            MediaPlayer.IsRepeating = true;
+            MediaPlayer.Play(song);
         }
 
         public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen)

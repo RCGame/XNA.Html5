@@ -101,7 +101,11 @@ namespace Microsoft.Xna.Framework.Graphics
                 Html5.Canvas.Width = Window.InnerWidth;
                 Html5.Canvas.Height = Window.InnerHeight;
                 Viewport = new Viewport(0, 0, Html5.Canvas.Width, Html5.Canvas.Height);
-                Html5.OnResize();
+                try
+                {
+                    Html5.OnResize();
+                }
+                catch { }
             };            
         }
 

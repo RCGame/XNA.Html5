@@ -21,15 +21,29 @@ namespace Microsoft.Xna.Framework.Content
         public string RootDirectory { get; set; }
         public GraphicsDevice _graphicsDevice { get; set; }
         protected Dictionary<string, bool> ResourcesReady;
+        internal Action OnAllResourceLoaded;
 
         public ContentManager()
         {
             ResourcesReady = new Dictionary<string, bool>();
+            MediaPlayer.contentManager = this;
             SoundEffect.Init();
         }
 
         public ContentManager(IServiceProvider serviceProvider, string rootDirectory)
         {
+        }
+
+        private void NotifyIfAllResourcesLoaded()
+        {
+            if (AllResoucesLoaded)
+            {
+                try
+                {
+                    OnAllResourceLoaded();
+                }
+                catch { }
+            }
         }
 
         public T Load<T>(string name) where T : Loadable, new()
@@ -44,6 +58,7 @@ namespace Microsoft.Xna.Framework.Content
                     t.Image = img;
                     t.Name = name;
                     ResourcesReady[name] = true;
+                    NotifyIfAllResourcesLoaded();
                 };
                 img.Src = RootDirectory + "/" + name + ".png";            
                 return t as T;
@@ -53,25 +68,19 @@ namespace Microsoft.Xna.Framework.Content
                 var t = new SoundEffect();
                 t.Load(RootDirectory + "/" + name + ".wav", () => {
                     t.Name = name;
-                    ResourcesReady[name] = true;
+                    ResourcesReady[name] = t.Loaded = true;
+                    NotifyIfAllResourcesLoaded();
                 });
                 return t as T;
             }
             else if (typeof(T) == typeof(Song))
             {
                 var t = new Song();
-                var sound = new HTMLAudioElement();
-                
-                sound.Preload = "none";
-                sound.OnCanPlayThrough = (e) =>
-                {
-                    t.Sound = sound;
+                t.Load(RootDirectory + "/" + name + ".mp3", () => {
                     t.Name = name;
-                    ResourcesReady[name] = true;
-                };
-                sound.Src = RootDirectory + "/" + name + ".mp3";
-                Document.Body.AppendChild(sound);
-                sound.Load();
+                    ResourcesReady[name] = t.Loaded = true;
+                    NotifyIfAllResourcesLoaded();
+                });
                 return t as T;
             }
             else
