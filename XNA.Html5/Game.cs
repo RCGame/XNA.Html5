@@ -82,23 +82,31 @@ namespace Microsoft.Xna.Framework
         private void GameLoop()
         {
             Window.ClearTimeout(timeoutId);
-            gameTime.ElapsedGameTime = DateTime.Now - timeNow;
-            gameTime.TotalGameTime += gameTime.ElapsedGameTime;
-            timeNow = DateTime.Now;
-            t1 = DateTime.Now;
-            if (Content.AllResoucesLoaded)
+            if (IsActive)
             {
-                u1 = DateTime.Now;
-                Update(gameTime);
-                u2 = DateTime.Now;
-                Draw(gameTime);
+                gameTime.ElapsedGameTime = DateTime.Now - timeNow;
+                gameTime.TotalGameTime += gameTime.ElapsedGameTime;
+                timeNow = DateTime.Now;
+                t1 = DateTime.Now;
+                if (Content.AllResoucesLoaded)
+                {
+                    u1 = DateTime.Now;
+                    Update(gameTime);
+                    u2 = DateTime.Now;
+                    Draw(gameTime);
+                }
+                t2 = DateTime.Now;
+                leadingTime = Convert.ToInt32(_targetElapsedTime.TotalMilliseconds - (t2 - t1).TotalMilliseconds);
+                //System.Console.WriteLine("elapsedTime: " + gameTime.ElapsedGameTime.TotalMilliseconds + " totalTime: " + gameTime.TotalGameTime.TotalSeconds + " leadingTime: " + leadingTime + " updateTime: " + (u2 - u1).TotalMilliseconds + " totalProcessingTime: " + (t2 - t1).TotalMilliseconds);
+                if (leadingTime <= 0)
+                {
+                    leadingTime = 1;
+                }
             }
-            t2 = DateTime.Now;
-            leadingTime = Convert.ToInt32(_targetElapsedTime.TotalMilliseconds - (t2 - t1).TotalMilliseconds);
-            //System.Console.WriteLine("elapsedTime: " + gameTime.ElapsedGameTime.TotalMilliseconds + " totalTime: " + gameTime.TotalGameTime.TotalSeconds + " leadingTime: " + leadingTime + " updateTime: " + (u2 - u1).TotalMilliseconds + " totalProcessingTime: " + (t2 - t1).TotalMilliseconds);
-            if (leadingTime <= 0)
+            else
             {
-                leadingTime = 1;
+                timeNow = DateTime.Now;
+                leadingTime = 100;
             }
             timeoutId = Window.SetTimeout(() =>
             {

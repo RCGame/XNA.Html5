@@ -6,6 +6,7 @@ using FarseerPhysics.Factories;
 using FarseerPhysics.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Audio;
 
 namespace FarseerPhysics.Samples
 {
@@ -16,7 +17,7 @@ namespace FarseerPhysics.Samples
         private SpriteBatch _batch;
         private float width = 3f;
         public Texture2D tex;
-
+        
         public Pyramid(World world, ScreenManager screenManager, Vector2 position, int count, float density)
         {
             _batch = screenManager.SpriteBatch;

@@ -5,47 +5,64 @@ using Bridge;
 using Bridge.Html5;
 using Microsoft.Xna.Framework;
 using FarseerPhysics.Samples;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace FarseerPhysics.Demo
 {
     public class App
     {
+        private static PhysicsGame game;
+
         public static void Main()
         {
-            HTMLButtonElement button = new HTMLButtonElement();
-            button.InnerHTML = "Fullscreen Experience (use landscape)";
-            button.SetAttribute("style", 
-                @"position: fixed;
-    top: 50%;
-    left: 50%;
-    width: 80%;
-    transform: translate(-50%, -50%);
-    font-size: 30px;");
+            if (CustomScripts.IsMobileDevice())
+            {
+                HTMLButtonElement button = new HTMLButtonElement();
+                button.InnerHTML = "Fullscreen Experience (use landscape)";
+                button.SetAttribute("style", CustomScripts.FullScreenButtonStyle);
 
-            button.OnClick = (e) =>
-            {
-                Script.Write(
-                    @"if (document.body.requestFullscreen) {
-        document.body.requestFullscreen();
+                button.OnClick = (e) =>
+                {
+                    CustomScripts.RequestFullScreen();
+                    Document.Body.RemoveChild(button);
+                    RunGame();
+                };
+                Document.Body.AppendChild(button);
+                Html5.OnResize = () =>
+                {
+                    if (game != null)
+                    {
+                        if (Window.InnerWidth < Window.InnerHeight)
+                        {
+                            if (game.IsActive)
+                            {
+                                game.IsActive = false;
+                                Document.Body.RemoveChild(Html5.Canvas);
+                                Document.Body.AppendChild(button);
+                            }
+                        }
+                        else
+                        {
+                            if (!game.IsActive)
+                            {
+                                Document.Body.RemoveChild(button);
+                                Document.Body.AppendChild(Html5.Canvas);
+                                game.IsActive = true;
+                            }
+                        }
+                    }
+                };
             }
-    else if (document.body.mozRequestFullScreen)
+            else
             {
-                document.body.mozRequestFullScreen();
+                RunGame();
             }
-            else if (document.body.webkitRequestFullscreen)
-            {
-                document.body.webkitRequestFullscreen();
-            }
-            else if (document.body.msRequestFullscreen)
-            {
-                document.body.msRequestFullscreen();
-            }
-            ");
-                Document.Body.RemoveChild(button);
-                PhysicsGame game = new PhysicsGame();
-                game.Run();
-            };
-            Document.Body.AppendChild(button);
+        }
+
+        public static void RunGame()
+        {
+            game = new PhysicsGame();
+            game.Run();
         }
     }
 }
