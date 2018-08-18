@@ -18,6 +18,7 @@ namespace FarseerPhysics.Demo
             WebAudioHelper.Init();
             if (CustomScripts.IsMobileDevice())
             {
+                // Only because iOS requires a user triggered action before any audio can play
                 WebAudioHelper.Load("Content/Audio/Collision.mp3", () =>
                 {
                     HTMLButtonElement button = new HTMLButtonElement();
