@@ -39,6 +39,11 @@ namespace FarseerPhysics.Demo
             return Script.Write<bool>("window.orientation !== undefined");
         }
 
+        public static bool IsIOS()
+        {
+            return Script.Write<bool>("/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;");
+        }
+
         public static bool IsFullScreen()
         {
             return Script.Write<bool>("document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen");

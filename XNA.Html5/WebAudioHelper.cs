@@ -101,6 +101,12 @@ AudioContextManager.prototype.play = function () {
 
 var audioContexts = [];
 
+function playAllAudios() {
+    for (var i = 0; i < audioContexts.length; i++) {
+        audioContexts[i].play();
+    }
+}
+
 function addAudioContext() {
     audioContexts.push(new AudioContextManager());
     return audioContexts.length - 1;
@@ -112,15 +118,9 @@ function removeAllAudioContexts() {
             Document.Body.AppendChild(script);
         }
 
-        public static void Play()
+        public static void Activate()
         {
-            Script.Write("audioContexts[0].play();");
-        }
-
-        public static void Load(string src, Action d)
-        {
-            int index = Script.Write<int>("addAudioContext()");
-            Script.Write("audioContexts[index].load(src, d);");
+            Script.Write("playAllAudios();");
         }
     }
 }
