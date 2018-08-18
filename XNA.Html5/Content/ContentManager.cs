@@ -27,7 +27,6 @@ namespace Microsoft.Xna.Framework.Content
         {
             ResourcesReady = new Dictionary<string, bool>();
             MediaPlayer.contentManager = this;
-            SoundEffect.Init();
         }
 
         public ContentManager(IServiceProvider serviceProvider, string rootDirectory)
@@ -66,7 +65,7 @@ namespace Microsoft.Xna.Framework.Content
             else if (typeof(T) == typeof(SoundEffect))
             {
                 var t = new SoundEffect();
-                t.Load(RootDirectory + "/" + name + ".wav", () => {
+                t.Load(RootDirectory + "/" + name + ".mp3", () => {
                     t.Name = name;
                     ResourcesReady[name] = t.Loaded = true;
                     NotifyIfAllResourcesLoaded();
