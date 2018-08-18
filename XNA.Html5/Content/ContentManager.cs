@@ -21,11 +21,12 @@ namespace Microsoft.Xna.Framework.Content
         public string RootDirectory { get; set; }
         public GraphicsDevice _graphicsDevice { get; set; }
         protected Dictionary<string, bool> ResourcesReady;
-        internal Action OnAllResourceLoaded;
+        public Action OnAllResourceLoaded;
 
         public ContentManager()
         {
             ResourcesReady = new Dictionary<string, bool>();
+            WebAudioHelper.Init();
             MediaPlayer.contentManager = this;
         }
 
