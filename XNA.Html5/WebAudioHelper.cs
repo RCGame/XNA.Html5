@@ -118,7 +118,7 @@ function removeAllAudioContexts() {
             Document.Body.AppendChild(script);
         }
 
-        public static void Play()
+        public static void Activate()
         {
             Script.Write("playAllAudios();");
         }

@@ -75,7 +75,7 @@ namespace FarseerPhysics.Demo
 
                     button.OnClick = (e) =>
                     {
-                        WebAudioHelper.Play();
+                        WebAudioHelper.Activate();
                         Document.Body.RemoveChild(button);
                         game.IsActive = true;
                         Document.Body.AppendChild(Html5.Canvas);
