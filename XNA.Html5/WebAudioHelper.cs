@@ -8,9 +8,6 @@ using Bridge.Html5;
 
 namespace Microsoft.Xna.Framework
 {
-    /// <summary>
-    /// Only because iOS requires a user triggered action before any audio can play
-    /// </summary>
     public class WebAudioHelper
     {
         public static void Init()
