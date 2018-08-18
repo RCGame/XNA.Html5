@@ -67,8 +67,8 @@
     <Content Include="Content\Assets\Background.png" />
     <Content Include="Content\Assets\Ball.png" />
     <Content Include="Content\Assets\Box.png" />
-    <Content Include="Content\Audio\CelticHarp.mp3" />
-    <Content Include="Content\Audio\Collision.wav" />
+    <Content Include="Content\Audio\CelticHarps.mp3" />
+    <Content Include="Content\Audio\Collision.mp3" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>

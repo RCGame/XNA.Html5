@@ -15,43 +15,48 @@ namespace FarseerPhysics.Demo
 
         public static void Main()
         {
+            WebAudioHelper.Init();
             if (CustomScripts.IsMobileDevice())
             {
-                HTMLButtonElement button = new HTMLButtonElement();
-                button.InnerHTML = "Fullscreen Experience (use landscape)";
-                button.SetAttribute("style", CustomScripts.FullScreenButtonStyle);
+                WebAudioHelper.Load("Content/Audio/Collision.mp3", () =>
+                {
+                    HTMLButtonElement button = new HTMLButtonElement();
+                    button.InnerHTML = "Fullscreen Experience (use landscape)";
+                    button.SetAttribute("style", CustomScripts.FullScreenButtonStyle);
 
-                button.OnClick = (e) =>
-                {
-                    CustomScripts.RequestFullScreen();
-                    Document.Body.RemoveChild(button);
-                    RunGame();
-                };
-                Document.Body.AppendChild(button);
-                Html5.OnResize = () =>
-                {
-                    if (game != null)
+                    button.OnClick = (e) =>
                     {
-                        if (Window.InnerWidth < Window.InnerHeight)
+                        WebAudioHelper.Play();
+                        CustomScripts.RequestFullScreen();
+                        Document.Body.RemoveChild(button);
+                        RunGame();
+                    };
+                    Document.Body.AppendChild(button);
+                    Html5.OnResize = () =>
+                    {
+                        if (game != null)
                         {
-                            if (game.IsActive)
+                            if (Window.InnerWidth < Window.InnerHeight)
                             {
-                                game.IsActive = false;
-                                Document.Body.RemoveChild(Html5.Canvas);
-                                Document.Body.AppendChild(button);
+                                if (game.IsActive)
+                                {
+                                    game.IsActive = false;
+                                    Document.Body.RemoveChild(Html5.Canvas);
+                                    Document.Body.AppendChild(button);
+                                }
+                            }
+                            else
+                            {
+                                if (!game.IsActive)
+                                {
+                                    Document.Body.RemoveChild(button);
+                                    Document.Body.AppendChild(Html5.Canvas);
+                                    game.IsActive = true;
+                                }
                             }
                         }
-                        else
-                        {
-                            if (!game.IsActive)
-                            {
-                                Document.Body.RemoveChild(button);
-                                Document.Body.AppendChild(Html5.Canvas);
-                                game.IsActive = true;
-                            }
-                        }
-                    }
-                };
+                    };
+                });
             }
             else
             {

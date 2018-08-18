@@ -12,6 +12,7 @@ namespace Microsoft.Xna.Framework.Media
         private static bool gameHasControl = true;
         internal static ContentManager contentManager;
         private static Song currentSong;
+        private static bool isPlaying;
 
         public static bool GameHasControl
         {
@@ -29,7 +30,10 @@ namespace Microsoft.Xna.Framework.Media
                 Song song = obj as Song;
                 if (currentSong == song)
                 {
-                    song.Resume();
+                    if (!isPlaying)
+                    {
+                        song.Resume();
+                    }
                 }
                 else
                 {
@@ -38,12 +42,14 @@ namespace Microsoft.Xna.Framework.Media
                     if (song.Loaded)
                     {
                         song.Play();
+                        isPlaying = true;
                     }
                     else
                     {
                         contentManager.OnAllResourceLoaded = () =>
                         {
                             song.Play();
+                            isPlaying = true;
                         };
                     }
                 }
@@ -55,6 +61,7 @@ namespace Microsoft.Xna.Framework.Media
             if (currentSong.Loaded)
             {
                 currentSong.Suspend();
+                isPlaying = false;
             }
         }
 

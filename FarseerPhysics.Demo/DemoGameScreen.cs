@@ -24,6 +24,8 @@ namespace FarseerPhysics.Samples.Demos
         private Border b1, b2, b3, b4;
         private Vector2 touchOn, touchOff;
         private bool didPress = false;
+        private Song song;
+        private bool musicStarted = false;
 
         public DemoGameScreen(ScreenManager screenManager) : base(screenManager)
         {
@@ -45,13 +47,17 @@ namespace FarseerPhysics.Samples.Demos
             b2 = new Border(World, ScreenManager, new Vector2(frameStartPos.X + frameWidth, frameStartPos.Y + frameHeight / 2f), frameThick, frameHeight, _pyramid.tex);
             b3 = new Border(World, ScreenManager, new Vector2(frameStartPos.X + frameWidth / 2f, frameStartPos.Y), frameWidth, frameThick, _pyramid.tex);
             b4 = new Border(World, ScreenManager, new Vector2(frameStartPos.X + frameWidth / 2f, frameStartPos.Y + frameHeight), frameWidth, frameThick, _pyramid.tex);
-            var song = ScreenManager.Content.Load<Song>("Audio/CelticHarp");
+            song = ScreenManager.Content.Load<Song>("Audio/CelticHarps");
             MediaPlayer.IsRepeating = true;
-            MediaPlayer.Play(song);
         }
 
         public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen)
         {
+            if (!musicStarted)
+            {
+                MediaPlayer.Play(song);
+                musicStarted = true;
+            }
             base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
             var state = TouchPanel.GetState();
             foreach (var touch in state)
@@ -59,6 +65,7 @@ namespace FarseerPhysics.Samples.Demos
                 switch (touch.State)
                 {
                     case TouchLocationState.Pressed:
+                        //MediaPlayer.Play(song);
                         touchOn = touch.Position;
                         break;
                     case TouchLocationState.Released:
@@ -77,6 +84,7 @@ namespace FarseerPhysics.Samples.Demos
                     {
                         touchOn = new Vector2(mouse.Position.X, mouse.Position.Y);
                         didPress = true;
+                        //MediaPlayer.Play(song);
                     }
                     break;
                 case ButtonState.Released:
