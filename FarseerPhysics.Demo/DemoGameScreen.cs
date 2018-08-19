@@ -105,7 +105,7 @@ namespace FarseerPhysics.Samples.Demos
             ScreenManager.SpriteBatch.Begin(0, null, null, null, null, null, null);
             ScreenManager.SpriteBatch.Draw(background, new Vector2(ScreenManager.GraphicsDevice.Viewport.Width / 2f, ScreenManager.GraphicsDevice.Viewport.Height / 2f), null, Color.White, 0f, new Vector2(background.Width / 2f, background.Height / 2f), (float)ScreenManager.GraphicsDevice.Viewport.Height / (float)background.Height, SpriteEffects.None, 0f);
             ScreenManager.SpriteBatch.End();
-            ScreenManager.SpriteBatch.Begin(0, null, null, null, null, null, Camera.View);
+            ScreenManager.SpriteBatch.Begin(0, null, null, null, null, null, null);
             _pyramid.Draw();
             agent.Draw();
             b1.Draw();
