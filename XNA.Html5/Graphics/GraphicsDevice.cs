@@ -119,8 +119,9 @@ namespace Microsoft.Xna.Framework.Graphics
         {
             if (spec.transform != null)
             {
+                var transform = spec.transform.Value;
+                Html5.Context.SetTransform(transform.M11, transform.M12, transform.M21, transform.M22, transform.M41, transform.M42);
             }
-
             foreach (var sprite in spec.spriteSpecs)
             {
                 Html5.Context.Save();
@@ -135,9 +136,9 @@ namespace Microsoft.Xna.Framework.Graphics
                     );
                 Html5.Context.Restore();
             }
-
             if (spec.transform != null)
             {
+                Html5.Context.SetTransform(1, 0, 0, 1, 0, 0);
             }
         }
     }
