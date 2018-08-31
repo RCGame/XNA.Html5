@@ -38,12 +38,29 @@ namespace Microsoft.Xna.Framework.Graphics
                 Html5.MouseState = new MouseState();
                 Html5.MouseState.LeftButton = ButtonState.Pressed;
                 Html5.MouseState.Position = new Point(e.ClientX, e.ClientY);
+                Html5.Touches.Clear();
+                TouchLocation loc = new TouchLocation(0, TouchLocationState.Pressed, new Vector2(e.ClientX, e.ClientY));
+                Html5.Touches.Add(loc);
+            };
+            Html5.Canvas.OnMouseMove = (e) =>
+            {
+                if (TouchPanel.didPress)
+                {
+                    Html5.Touches.Clear();
+                    TouchLocation loc = new TouchLocation(0, TouchLocationState.Moved, new Vector2(e.ClientX, e.ClientY));
+                    Html5.Touches.Add(loc);
+                }
             };
             Html5.Canvas.OnMouseUp = (e) =>
             {
                 Html5.MouseState = new MouseState();
                 Html5.MouseState.LeftButton = ButtonState.Released;
                 Html5.MouseState.Position = new Point(e.ClientX, e.ClientY);
+                List<TouchLocation> locs = new List<TouchLocation>();
+                TouchLocation loc = new TouchLocation(0, TouchLocationState.Released, new Vector2(e.ClientX, e.ClientY));
+                locs.Add(loc);
+                Html5.Touches.Clear();
+                Html5.Touches = locs;
             };
             Document.Body.OnTouchStart = (e) =>
             {
