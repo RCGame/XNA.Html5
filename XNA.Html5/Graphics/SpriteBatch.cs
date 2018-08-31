@@ -23,6 +23,7 @@ namespace Microsoft.Xna.Framework.Graphics
         internal float scale;
         internal Vector2 vScale;
         internal bool useVScale;
+        internal SpriteEffects effects;
     }
 
     public class SpriteBatch
@@ -51,10 +52,12 @@ namespace Microsoft.Xna.Framework.Graphics
             {
                 texture = texture,
                 position = position,
+                rectangle = sourceRectangle,
                 color = color,
                 rotation = rotation,
                 origin = origin,
                 scale = scale,
+                effects = effects,
                 useVScale = false
             });
         }
@@ -78,6 +81,7 @@ namespace Microsoft.Xna.Framework.Graphics
                 rotation = rotation,
                 origin = origin,
                 vScale = scale,
+                effects = effects,
                 useVScale = true
             });
         }
