@@ -84,7 +84,8 @@ namespace Microsoft.Xna.Framework.Graphics
 
         public void Begin()
         {
-
+            drawSpecs.transform = null;
+            drawSpecs.spriteSpecs.Clear();
         }
 
         public void Begin

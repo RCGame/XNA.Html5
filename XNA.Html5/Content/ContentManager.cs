@@ -83,6 +83,13 @@ namespace Microsoft.Xna.Framework.Content
                 });
                 return t as T;
             }
+            else if (typeof(T) == typeof(SpriteFont))
+            {
+                var t = new SpriteFont();
+                t.Name = name;
+                ResourcesReady[name] = true;
+                return t as T;
+            }
             else
             {
                 return new T();

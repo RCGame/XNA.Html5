@@ -65,7 +65,6 @@ namespace FarseerPhysics.Samples.Demos
                 switch (touch.State)
                 {
                     case TouchLocationState.Pressed:
-                        //MediaPlayer.Play(song);
                         touchOn = touch.Position;
                         break;
                     case TouchLocationState.Released:
@@ -76,27 +75,27 @@ namespace FarseerPhysics.Samples.Demos
                 }
             }
 
-            var mouse = Mouse.GetState();
-            switch (mouse.LeftButton)
-            {
-                case ButtonState.Pressed:
-                    if (!didPress)
-                    {
-                        touchOn = new Vector2(mouse.Position.X, mouse.Position.Y);
-                        didPress = true;
-                        //MediaPlayer.Play(song);
-                    }
-                    break;
-                case ButtonState.Released:
-                    if (didPress)
-                    {
-                        touchOff = new Vector2(mouse.Position.X, mouse.Position.Y);
-                        var force = touchOff - touchOn;
-                        agent.Body.ApplyForce(Vector2.Multiply(force, 150f));
-                        didPress = false;
-                    }
-                    break;
-            }
+            //var mouse = Mouse.GetState();
+            //switch (mouse.LeftButton)
+            //{
+            //    case ButtonState.Pressed:
+            //        if (!didPress)
+            //        {
+            //            touchOn = new Vector2(mouse.Position.X, mouse.Position.Y);
+            //            didPress = true;
+            //            //MediaPlayer.Play(song);
+            //        }
+            //        break;
+            //    case ButtonState.Released:
+            //        if (didPress)
+            //        {
+            //            touchOff = new Vector2(mouse.Position.X, mouse.Position.Y);
+            //            var force = touchOff - touchOn;
+            //            agent.Body.ApplyForce(Vector2.Multiply(force, 150f));
+            //            didPress = false;
+            //        }
+            //        break;
+            //}
         }
 
         public override void Draw(GameTime gameTime)
@@ -104,8 +103,6 @@ namespace FarseerPhysics.Samples.Demos
             ConvertUnits.SetDisplayUnitToSimUnitRatio((float)ScreenManager.GraphicsDevice.Viewport.Height / 35f);
             ScreenManager.SpriteBatch.Begin(0, null, null, null, null, null, null);
             ScreenManager.SpriteBatch.Draw(background, new Vector2(ScreenManager.GraphicsDevice.Viewport.Width / 2f, ScreenManager.GraphicsDevice.Viewport.Height / 2f), null, Color.White, 0f, new Vector2(background.Width / 2f, background.Height / 2f), (float)ScreenManager.GraphicsDevice.Viewport.Height / (float)background.Height, SpriteEffects.None, 0f);
-            ScreenManager.SpriteBatch.End();
-            ScreenManager.SpriteBatch.Begin(0, null, null, null, null, null, Camera.View);
             _pyramid.Draw();
             agent.Draw();
             b1.Draw();
