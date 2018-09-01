@@ -14,6 +14,7 @@ namespace Microsoft.Xna.Framework.Graphics
 
     internal class SpriteSpec
     {
+        internal string text;
         internal Texture2D texture;
         internal Vector2 position;
         internal Rectangle? rectangle;
@@ -111,7 +112,17 @@ namespace Microsoft.Xna.Framework.Graphics
             SpriteFont spriteFont, string text, Vector2 position, Color color,
             float rotation, Vector2 origin, float scale, SpriteEffects effects, float layerDepth)
         {
-
+            drawSpecs.spriteSpecs.Add(new SpriteSpec
+            {
+                text = text,
+                position = position,
+                color = color,
+                rotation = rotation,
+                origin = origin,
+                scale = scale,
+                effects = effects,
+                useVScale = false
+            });
         }
 
         public void End()
