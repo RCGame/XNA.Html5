@@ -9,9 +9,14 @@ namespace Microsoft.Xna.Framework.Graphics
 {
     public class SpriteFont : GraphicsResource
     {
+        public static string Font = "Arial Black";
+        internal static int Size = 50;
+
         public Vector2 MeasureString(string str)
         {
-            return new Vector2(10, 10);
+            Html5.Context.Font = Size + "px " + Font;
+            var m = Html5.Context.MeasureText(str);
+            return new Vector2((float)m.Width, (float)Size);
         }
     }
 }

@@ -144,29 +144,49 @@ namespace Microsoft.Xna.Framework.Graphics
                 Html5.Context.Save();
                 Html5.Context.Translate(sprite.position.X, sprite.position.Y);
                 Html5.Context.Rotate(sprite.rotation);
-                if (sprite.color.PackedValue != Color.White.PackedValue) //Save some CPU/GPU resource
+                if (sprite.text == null)
                 {
-                    Html5.Context.GlobalAlpha = (float)sprite.color.PackedValue / (float)Color.White.PackedValue;
+                    if (sprite.color.PackedValue != Color.White.PackedValue) //Save some CPU/GPU resource
+                    {
+                        Html5.Context.GlobalAlpha = (float)sprite.color.PackedValue / (float)Color.White.PackedValue;
+                    }
                 }
                 float dx = -sprite.origin.X * (sprite.useVScale ? sprite.vScale.X : sprite.scale);
                 float dy = -sprite.origin.Y * (sprite.useVScale ? sprite.vScale.Y : sprite.scale);
                 if (sprite.rectangle == null)
                 {
-                    float dw = sprite.texture.Width * (sprite.useVScale ? sprite.vScale.X : sprite.scale);
-                    float dh = sprite.texture.Height * (sprite.useVScale ? sprite.vScale.Y : sprite.scale);
-                    if (sprite.effects == SpriteEffects.FlipHorizontally)
+                    if (sprite.text == null) //texture
                     {
-                        Html5.Context.Scale(-1, 1);
-                        Html5.Context.Translate(-dw, 0f);
+                        float dw = sprite.texture.Width * (sprite.useVScale ? sprite.vScale.X : sprite.scale);
+                        float dh = sprite.texture.Height * (sprite.useVScale ? sprite.vScale.Y : sprite.scale);
+                        if (sprite.effects == SpriteEffects.FlipHorizontally)
+                        {
+                            Html5.Context.Scale(-1, 1);
+                            Html5.Context.Translate(-dw, 0f);
+                        }
+                        else if (sprite.effects == SpriteEffects.FlipVertically)
+                        {
+                            Html5.Context.Scale(1, -1);
+                            Html5.Context.Translate(0f, -dh);
+                        }
+                        Html5.Context.DrawImage(sprite.texture.Image,
+                            dx, dy, dw, dh
+                            );
                     }
-                    else if (sprite.effects == SpriteEffects.FlipVertically)
+                    else //font
                     {
-                        Html5.Context.Scale(1, -1);
-                        Html5.Context.Translate(0f, -dh);
+                        Html5.Context.TextAlign = CanvasTypes.CanvasTextAlign.Start;
+                        var color = sprite.color;
+                        Html5.Context.FillStyle = string.Format("rgba({0},{1},{2},{3})",
+                            Convert.ToInt32(color.R),
+                            Convert.ToInt32(color.G),
+                            Convert.ToInt32(color.B),
+                            Convert.ToInt32(color.A)
+                            );
+                        float size = SpriteFont.Size * sprite.scale;
+                        Html5.Context.Font = Convert.ToInt32(size) + "px " + SpriteFont.Font;
+                        Html5.Context.FillText(sprite.text, Convert.ToInt32(dx), 0);
                     }
-                    Html5.Context.DrawImage(sprite.texture.Image,
-                        dx, dy, dw, dh
-                        );
                 }
                 else
                 {
