@@ -128,7 +128,12 @@ namespace Microsoft.Xna.Framework.Graphics
 
         public void Clear(Color color)
         {
-            Html5.Context.FillStyle = "#" + color.PackedValue.ToString("X");
+            Html5.Context.FillStyle = string.Format("rgba({0},{1},{2},{3})",
+                            Convert.ToInt32(color.R),
+                            Convert.ToInt32(color.G),
+                            Convert.ToInt32(color.B),
+                            Convert.ToInt32(color.A)
+                            );
             Html5.Context.FillRect(0, 0, Html5.Canvas.Width, Html5.Canvas.Height);
         }
 
