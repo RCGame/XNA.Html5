@@ -22,6 +22,7 @@ namespace Microsoft.Xna.Framework.Content
         public GraphicsDevice _graphicsDevice { get; set; }
         protected Dictionary<string, bool> ResourcesReady;
         public Action OnAllResourceLoaded;
+        public Action<int> OnResourceLoaded;
 
         public ContentManager()
         {
@@ -34,9 +35,15 @@ namespace Microsoft.Xna.Framework.Content
         {
         }
 
-        private void NotifyIfAllResourcesLoaded()
+        private void NotifyIfResourcesLoaded()
         {
-            if (AllResoucesLoaded)
+            int percent = ResourcesReady.Where(t => t.Value).Count() * 100 / ResourcesReady.Count();
+            try
+            {
+                OnResourceLoaded(percent);
+            }
+            catch { }
+            if (percent == 100)
             {
                 try
                 {
@@ -58,7 +65,7 @@ namespace Microsoft.Xna.Framework.Content
                     t.Image = img;
                     t.Name = name;
                     ResourcesReady[name] = true;
-                    NotifyIfAllResourcesLoaded();
+                    NotifyIfResourcesLoaded();
                 };
                 img.Src = RootDirectory + "/" + name + ".png";            
                 return t as T;
@@ -69,7 +76,7 @@ namespace Microsoft.Xna.Framework.Content
                 t.Load(RootDirectory + "/" + name + ".mp3", () => {
                     t.Name = name;
                     ResourcesReady[name] = t.Loaded = true;
-                    NotifyIfAllResourcesLoaded();
+                    NotifyIfResourcesLoaded();
                 });
                 return t as T;
             }
@@ -79,7 +86,7 @@ namespace Microsoft.Xna.Framework.Content
                 t.Load(RootDirectory + "/" + name + ".mp3", () => {
                     t.Name = name;
                     ResourcesReady[name] = t.Loaded = true;
-                    NotifyIfAllResourcesLoaded();
+                    NotifyIfResourcesLoaded();
                 });
                 return t as T;
             }
