@@ -27,19 +27,20 @@ namespace Microsoft.Xna.Framework.Graphics
         public GraphicsDevice()
         {
             Html5.Canvas = new HTMLCanvasElement();
-            Html5.Canvas.Width = Window.InnerWidth;
-            Html5.Canvas.Height = Window.InnerHeight;
+            FitScreen();
             Document.Body.AppendChild(Html5.Canvas);
             Viewport = new Viewport(0, 0, Html5.Canvas.Width, Html5.Canvas.Height);
             Html5.Context = Html5.Canvas.GetContext("2d").As<CanvasRenderingContext2D>();
-            Document.Body.SetAttribute("style", "margin:0px;overflow:hidden;");
+            Document.Body.SetAttribute("style", "margin:0px;overflow:hidden;background-color:black;");
             Html5.Canvas.OnMouseDown = (e) =>
             {
                 Html5.MouseState = new MouseState();
                 Html5.MouseState.LeftButton = ButtonState.Pressed;
-                Html5.MouseState.Position = new Point(e.ClientX, e.ClientY);
+                int x = e.ClientX - Html5.Canvas.OffsetLeft;
+                int y = e.ClientY - Html5.Canvas.OffsetTop;
+                Html5.MouseState.Position = new Point(x, y);
                 Html5.Touches.Clear();
-                TouchLocation loc = new TouchLocation(0, TouchLocationState.Pressed, new Vector2(e.ClientX, e.ClientY));
+                TouchLocation loc = new TouchLocation(0, TouchLocationState.Pressed, new Vector2(x, y));
                 Html5.Touches.Add(loc);
             };
             Html5.Canvas.OnMouseMove = (e) =>
@@ -47,7 +48,9 @@ namespace Microsoft.Xna.Framework.Graphics
                 if (TouchPanel.didPress)
                 {
                     Html5.Touches.Clear();
-                    TouchLocation loc = new TouchLocation(0, TouchLocationState.Moved, new Vector2(e.ClientX, e.ClientY));
+                    int x = e.ClientX - Html5.Canvas.OffsetLeft;
+                    int y = e.ClientY - Html5.Canvas.OffsetTop;
+                    TouchLocation loc = new TouchLocation(0, TouchLocationState.Moved, new Vector2(x, y));
                     Html5.Touches.Add(loc);
                 }
             };
@@ -55,9 +58,11 @@ namespace Microsoft.Xna.Framework.Graphics
             {
                 Html5.MouseState = new MouseState();
                 Html5.MouseState.LeftButton = ButtonState.Released;
-                Html5.MouseState.Position = new Point(e.ClientX, e.ClientY);
+                int x = e.ClientX - Html5.Canvas.OffsetLeft;
+                int y = e.ClientY - Html5.Canvas.OffsetTop;
+                Html5.MouseState.Position = new Point(x, y);
                 List<TouchLocation> locs = new List<TouchLocation>();
-                TouchLocation loc = new TouchLocation(0, TouchLocationState.Released, new Vector2(e.ClientX, e.ClientY));
+                TouchLocation loc = new TouchLocation(0, TouchLocationState.Released, new Vector2(x, y));
                 locs.Add(loc);
                 Html5.Touches.Clear();
                 Html5.Touches = locs;
@@ -72,7 +77,9 @@ namespace Microsoft.Xna.Framework.Graphics
                 Html5.Touches.Clear();
                 foreach (var touch in e.Touches)
                 {
-                    TouchLocation loc = new TouchLocation(0, TouchLocationState.Pressed, new Vector2(touch.ClientX, touch.ClientY));
+                    int x = touch.ClientX - Html5.Canvas.OffsetLeft;
+                    int y = touch.ClientY - Html5.Canvas.OffsetTop;
+                    TouchLocation loc = new TouchLocation(0, TouchLocationState.Pressed, new Vector2(x, y));
                     Html5.Touches.Add(loc);
                 }
             };
@@ -84,7 +91,9 @@ namespace Microsoft.Xna.Framework.Graphics
                     Html5.Touches.Clear();
                     foreach (var touch in e.Touches)
                     {
-                        TouchLocation loc = new TouchLocation(0, TouchLocationState.Moved, new Vector2(touch.ClientX, touch.ClientY));
+                        int x = touch.ClientX - Html5.Canvas.OffsetLeft;
+                        int y = touch.ClientY - Html5.Canvas.OffsetTop;
+                        TouchLocation loc = new TouchLocation(0, TouchLocationState.Moved, new Vector2(x, y));
                         Html5.Touches.Add(loc);
                     }
                 }
@@ -95,7 +104,9 @@ namespace Microsoft.Xna.Framework.Graphics
                 List<TouchLocation> locs = new List<TouchLocation>();
                 foreach (var touch in Html5.Touches)
                 {
-                    TouchLocation loc = new TouchLocation(0, TouchLocationState.Released, new Vector2(touch.Position.X, touch.Position.Y));
+                    float x = touch.Position.X - Html5.Canvas.OffsetLeft;
+                    float y = touch.Position.Y - Html5.Canvas.OffsetTop;
+                    TouchLocation loc = new TouchLocation(0, TouchLocationState.Released, new Vector2(x, y));
                     locs.Add(loc);
                 }
                 Html5.Touches.Clear();
@@ -107,7 +118,9 @@ namespace Microsoft.Xna.Framework.Graphics
                 List<TouchLocation> locs = new List<TouchLocation>();
                 foreach (var touch in Html5.Touches)
                 {
-                    TouchLocation loc = new TouchLocation(0, TouchLocationState.Released, new Vector2(touch.Position.X, touch.Position.Y));
+                    float x = touch.Position.X - Html5.Canvas.OffsetLeft;
+                    float y = touch.Position.Y - Html5.Canvas.OffsetTop;
+                    TouchLocation loc = new TouchLocation(0, TouchLocationState.Released, new Vector2(x, y));
                     locs.Add(loc);
                 }
                 Html5.Touches.Clear();
@@ -115,15 +128,31 @@ namespace Microsoft.Xna.Framework.Graphics
             };
             Window.OnResize = (e) =>
             {
-                Html5.Canvas.Width = Window.InnerWidth;
-                Html5.Canvas.Height = Window.InnerHeight;
-                Viewport = new Viewport(0, 0, Html5.Canvas.Width, Html5.Canvas.Height);
+                FitScreen();
                 try
                 {
                     Html5.OnResize();
                 }
                 catch { }
             };            
+        }
+
+        private void FitScreen()
+        {
+            if (Window.InnerWidth < Window.InnerHeight)
+            {
+                Html5.Canvas.Width = Window.InnerWidth;
+                Html5.Canvas.Height = Html5.Canvas.Width * 9 / 16;
+                int top = (Window.InnerHeight - Html5.Canvas.Height) / 2;
+                Html5.Canvas.SetAttribute("style", "position:absolute;top:" + top + "px");
+            }
+            else
+            {
+                Html5.Canvas.Width = Window.InnerWidth;
+                Html5.Canvas.Height = Window.InnerHeight;
+                Html5.Canvas.SetAttribute("style", "");
+            }
+            Viewport = new Viewport(0, 0, Html5.Canvas.Width, Html5.Canvas.Height);
         }
 
         public void Clear(Color color)
