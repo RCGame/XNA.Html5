@@ -12,6 +12,7 @@ namespace Microsoft.Xna.Framework
 {
     public class Game
     {
+        public Action GameStart;
         private GameComponentCollection _components;
         public GraphicsDevice GraphicsDevice { get; set; }
         public bool IsActive { get; set; }
